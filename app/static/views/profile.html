@@ -1,0 +1,19 @@
+<div class="row" style="margin-top:55px">
+    <img src="{{user.picture_url}}" height="350px" width="auto" class="center-block" style="margin-top:20px" />
+    <div style="text-align:center">
+        <h1>{{user.first_name}} {{user.last_name}}</h1>
+    </div>
+    <div style="text-align:center" ng-show="setEditable">
+        <p>Graduation Year</p>
+        <input type="text" class="form-control center-block" style="width:20%;text-align:center" ng-model="user.graduation_year">
+        <p style="margin-top:10px">Major</p>
+        <input type="text" class="form-control center-block" style="width:20%;text-align:center" ng-model="user.academic_major">
+        <button ng-click="updateInfomation()" style="margin-top:20px;background-color:#EC443F;border-color:white;color:white" class="btn btn-default">Update</button>
+    </div>
+    <div style="text-align:center" ng-hide="setEditable">
+        <p><u>Graduation Year</u></p>
+        <span type="text" class="center-block" style="width:20%;text-align:center">{{user.graduation_year}}</span>
+        <p style="margin-top:10px"><u>Major</u></p>
+        <span type="text" class="center-block" style="width:20%;text-align:center"> {{user.academic_major}}</span>
+    </div>
+</div>

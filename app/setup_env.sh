@@ -1,0 +1,10 @@
+export DEBUG=True
+export SECRET_KEY=foobarbaz
+export MYSQL_DATABASE=app
+export MYSQL_USER=mysql
+export MYSQL_PASSWORD=mysql
+export MYSQL_ROOT_PASSWORD=mysql
+export DB_HOST=127.0.0.1
+export DB_PORT=3306
+export FACEBOOK_APP_ID=1465734760385892
+export FACEBOOK_APP_SECRET=4e7ccd1c2b9c1a9e205a0b45051f640d

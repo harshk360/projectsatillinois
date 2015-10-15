@@ -1,0 +1,71 @@
+<!DOCTYPE   html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="author" content="Illini Hackers">
+    <meta name="description" content="Projects at the University of Illinois at Urbana-Champaign">
+
+    <title>Projects @ ILLINOIS</title>
+    <!-- <link rel="icon" type = "image/png" href = "static/img/logo.png"> -->
+
+    <meta property="og:title" content="Projects @ ILLINOIS">
+    <meta property="og:url" content="http://www.projectsatillinois.xyz">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Projects @ ILLINOIS">
+    <meta property="og:description" content="Projects at the University of Illinois at Urbana-Champaign">
+
+    <link href = "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+    <link href = "static/css/main.css" rel="stylesheet">
+    <link rel="stylesheet" type = "text/css" href = "/static/css/fonts.css">
+    <link href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
+
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular-route.js"></script>
+    <script src = "static/js/app.js"></script>
+    <script src = "https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3&appId=1465734760385892";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+</head>
+<body ng-app = "projects">
+    <nav class = "navbar-fixed-top" ng-controller="NavCtrl">
+        <div class = "container-fluid">
+            <div class = "navbar-header">
+                <a class = "navbar-brand" href = "#/home" rel="home">
+                    <!-- <img id = "logo" src = "static/img/logo.png"/> -->
+                </a>
+                <p class = "navbar-text">
+                  <a class = "navbar-name" ref="#/home">Projects @ ILLINOIS</a>
+                  <button type = "button" class = "navbar-toggle collapsed" data-toggle = "collapse" data-target = "#bs-example-navbar-collapse-1" aria-expanded = "false">
+                    <span class = "sr-only"></span>
+                    <span class = "icon-bar"></span>
+                    <span class = "icon-bar"></span>
+                    <span class = "icon-bar"></span>
+                  </button>
+                </p>
+            </div>
+            <div class = "collapse navbar-collapse" id = "bs-example-navbar-collapse-1">
+              <div ng-hide = "loggedIn">
+                  <a type = "button" class = "btn btn-default navbar-btn navbar-right" href = "facebook_login">Register</a>
+              </div>
+              <div ng-show = "loggedIn" style = "display: inline;">
+                  <button type = "button" class = "btn btn-default navbar-btn navbar-right" ng-click="logOut()">Logout</button>
+                  <p class = "navbar-right navbar-text" id = "greeting-text">Welcome,
+                    <a style="text-decoration: underline; color: white;" href = "{{userRoute}}">{{user}}</a>
+                  </p>
+                  <img src = "{{picture_url}}" class = "img-circle img-profile navbar-right"/>
+              </div>
+            </div>
+        </div>
+    </nav>
+    <ng-view></ng-view>
+</body>
+</html>

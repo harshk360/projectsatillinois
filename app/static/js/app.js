@@ -8,9 +8,9 @@ angular
         $routeProvider
             .when('/completed', {
                 templateUrl: 'static/views/completed.html',
-                controller:'HomeCtrl'
+                controller:'CompletedCtrl'
             })
-            when('/inprogress', {
+            .when('/inprogress', {
                 templateUrl: 'static/views/inprogress.html',
                 controller: 'InProgressCtrl'
             })
@@ -20,7 +20,7 @@ angular
             })
             .when('/project/:projectId', {
                 templateUrl: 'static/views/project.html',
-                controller: 'CompletedCtrl'
+                controller: 'ProjectCtrl'
             })
             .otherwise('/completed');
     });
@@ -29,7 +29,7 @@ angular.module('projects')
     .controller('NavCtrl', function($scope, $http, $location) {
 
         $scope.user = "";
-
+        /**
         $http
             .get('api/user/current')
             .success(function(value){
@@ -70,12 +70,18 @@ angular.module('projects')
                     $scope.loggedIn = false;
                 })
         };
-    })
-    .controller('CompletedCtrl', function ($scope, $http, $routeParams) {
+        */
 
     })
-    .controller('InProgressCtrl', function ($scope, $http, $routeParams) {
-
+    .controller('CompletedCtrl', function ($scope, $http, $routeParams, $location) {
+        $scope.go = function ( path ) {
+            $location.path( path );
+        };
+    })
+    .controller('InProgressCtrl', function ($scope, $http, $routeParams, $location) {
+        $scope.go = function ( path ) {
+            $location.path( path );
+        };
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route) {
 

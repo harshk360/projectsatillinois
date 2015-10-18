@@ -27,6 +27,10 @@ def log_request():
 def index():
   return app.send_static_file("views/index.html")
 
+@app.errorhandler(403)
+def is404(e):
+  return redirect(url_for('index'))
+
 @app.errorhandler(404)
 def is404(e):
   return render_template('error.html', e = e)
@@ -40,25 +44,3 @@ def get_current_user():
     return jsonify(user.serialize())
   except NoResultFound as e:
     return jsonify(error = "No user logged in"), 404
-
-# @app.route('/api/user/current/update', methods=['POST'])
-# def update_current_user():
-#     if not ('logged_in' in session and session['logged_in']):
-#         return jsonify(error = "No user logged in"), 404
-#     try:
-#         user = db.session.query(User).filter_by(id=session['id']).first()
-#         user.academic_major = request.get_json()['academic_major']
-#         user.graduation_year = request.get_json()['graduation_year']
-#         db.session.commit()
-#         return jsonify(user.serialize())
-#     except NoResultFound as e:
-#         return jsonify(error = "No user logged in"), 404
-
-
-# @app.route('/api/user/<int:id>')
-# def get_user_profile(id):
-#     try:
-#         user = User.query.filter(User.id == id).one()
-#         return jsonify(user.serialize())
-#     except NoResultFound as e:
-#         return jsonify(error = "No user found for id " + str(id)), 404

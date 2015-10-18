@@ -114,4 +114,16 @@ angular.module('projects')
             .error(function(err) {
                 console.log(err);
             });
+    })
+    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route) {
+        $scope.user = {};
+        $http
+            .get('api/user/' + $routeParams.profileId)
+            .success(function(value) {
+                $scope.user = value;
+                console.log(value)
+            })
+            .error(function(err) {
+                console.log(err);
+            });
     });

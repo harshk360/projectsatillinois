@@ -15,14 +15,14 @@
                 </div>
                 <div class="panel-footer">
                     <div class="row">
-                        <h3 style="margin-top:5px; text-align: center">{{p.name}}</h3>
+                        <a href="#/project/{{p.id}}"><h3 style="margin-top:5px; text-align: center" >{{p.name}}</h3></a>
                         <div class="col-sm-9" style="text-align: left">
                             <p class="truncate">{{p.description}}</p>
                             <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="s in p.skills">{{s.name}}</span></div>
                         </div>
                         <div class="col-sm-3"  style="text-align: center;">
                             <img src="{{p.owner.avatar}}" class="img-responsive img-circle" alt="{{p.owner.full_name}}" style="max-width:75%; margin: auto; display: block;"/>
-                            <h5>{{p.owner.full_name}}</h5>
+                            <h5><a href="#/profile/{{project.owner.id}}">{{p.owner.full_name}}</a></h5>
                             <a style="color:black" href="//{{p.github_url}}" ng-if="p.github_url"><i class="fa fa-2x fa-github-square"></i></a>
                             <a style="color:black" href="//{{p.youtube_url}}" ng-if="p.youtube_url"><i class="fa fa-2x fa-youtube-square"></i></a>
                         </div>

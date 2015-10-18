@@ -72,7 +72,11 @@ class User(db.Model):
     return {
         'id' : self.id,
         'full_name': self.full_name,
-        'avatar' : self.avatar
+        'avatar' : self.avatar,
+        'graduation_month' : self.graduation_month,
+        'graduation_year' : self.graduation_year,
+        'description' : self.description,
+        'academic_major' : self.academic_major
     }
 
 class Login(db.Model):

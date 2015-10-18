@@ -11,7 +11,7 @@ from sqlalchemy.sql import func
 def get_projects(page):
     number_per_page = 8
     start_index = ((page - 1) * number_per_page)
-    projects = Project.query.order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
+    projects = Project.query.filter(Project.status!="DELETED").order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
     end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
     return jsonify(projects=[project.serialize() for project in projects], page = page, number_of_pages = int(end_page))
 
@@ -21,3 +21,18 @@ def get_project_by_id(id):
   images = Image.query.filter_by(project_id=id).all()
   comments = Comment.query.filter_by(project_id=id).order_by(asc(Comment.timestamp)).all()
   return jsonify(project = project.serialize(), images = [image.serialize() for image in images], comments = [comment.serialize() for comment in comments])
+
+@app.route('/api/v1/project/<int:id>/<string:status>')
+def update_project_status_by_id(id, status):
+  if id != session['id']:
+    return jsonify(error="User does not own project"), 403
+  project = Project.query.filter_by(id=id).first()
+  if status not in ['IN_PROGRESS','COMPLETED', 'DELETED']:
+    return jsonify(error="Invalid status"), 400
+  project.status = status
+  try:
+    db.session.add(project)
+    db.session.commit()
+    return jsonify(project=project.serialize())
+  except e:
+    return jsonify(error=str(e)), 500

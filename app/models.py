@@ -67,9 +67,10 @@ class Visit(db.Model):
 
 class Project(db.Model):
   __tablename__ = "projects"
+  enum = Enum('IN_PROGRESS','COMPLETED', 'DELETED')
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(255), nullable=False)
-  status = db.Column(Enum('IN_PROGRESS','COMPLETED'), nullable=False)
+  status = db.Column(enum, nullable=False)
   cost = db.Column(db.DECIMAL(6, 2))
   youtube_url = db.Column(db.String(255))
   github_url = db.Column(db.String(255))
@@ -84,7 +85,7 @@ class Project(db.Model):
       'id' : self.id,
       'name' : self.name,
       'status' : self.status,
-      'cost' : self.cost,
+      'cost' : float(self.cost),
       'youtube_url' : self.youtube_url,
       'github_url' : self.github_url,
       'description' : self.description

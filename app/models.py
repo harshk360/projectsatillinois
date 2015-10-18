@@ -53,8 +53,16 @@ class Visit(db.Model):
   project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=True)
   timestamp = db.Column(db.TIMESTAMP(), default=func.now(), nullable=False)  
   ip_address = db.Column(db.String(255), nullable = False)
+  url = db.Column(db.String(255), nullable = False)
   user = db.relationship("User")
   project = db.relationship("Project")
+
+  def __init__(self, user_id, project_id, timestamp, ip_address, url):
+    self.user_id = user_id
+    self.project_id = project_id
+    self.timestamp = timestamp
+    self.ip_address = ip_address
+    self.url = url
 
 class Project(db.Model):
   __tablename__ = "projects"

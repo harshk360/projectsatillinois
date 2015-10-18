@@ -300,3 +300,6 @@ overflow: hidden;
 }
 
 .non-semantic-protector { position: relative; z-index: 1; }
+
+.user-form-field {
+}

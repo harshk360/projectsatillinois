@@ -1,18 +1,20 @@
-<div class = "index">
+<div class = "index container">
     <div class="text-center">
         <div class="btn-group" role="group" aria-label="..." style="align-content: center">
             <button type="button" class="btn btn-default" ng-click="go('/completed')">Completed</button>
             <button type="button" class="btn btn-default active">In Progress</button>
         </div>
     </div>
-    <div class="row" style="margin-left:40px">
-        <div class="panel panel-default project-pane col-md-5 text-center" ng-repeat="p in projects">
-            <div class="panel-body">
-                <img src="{{p.picture}}" class="img-responsive project-image" alt="Responsive image"/>
-            </div>
-            <div class="panel-footer">
-                <h4>{{p.name}}</h4>
-                <p class="truncate">{{p.description}}</p>
+    <div class="row">
+        <div class="col-md-4 col-sm-6 text-center" ng-repeat="p in projects">
+            <div class = "panel panel-default">
+                <div class="panel-body">
+                    <img src="{{p.picture}}" class="img-responsive project-image" alt="Responsive image"/>
+                </div>
+                <div class="panel-footer">
+                    <h4>{{p.name}}</h4>
+                    <p class="truncate">{{p.description}}</p>
+                </div>
             </div>
         </div>
     </div>

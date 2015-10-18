@@ -29,7 +29,6 @@ angular.module('projects')
     .controller('NavCtrl', function($scope, $http, $location) {
 
         $scope.user = "";
-        /**
         $http
             .get('api/user/current')
             .success(function(value){
@@ -70,7 +69,7 @@ angular.module('projects')
                     $scope.loggedIn = false;
                 })
         };
-        */
+        
 
     })
     .controller('CompletedCtrl', function ($scope, $http, $routeParams, $location) {

@@ -4,7 +4,7 @@
         <h1>{{project.project.name}}</h1>
         <p>{{project.project.description}}</p>
         <h3>Status: {{project.project.status}}</h3>
-        <h3>Owner: {{project.project.owner.full_name}}</h3>
+        <h3>Owner: <a href="#/profile/{{project.project.owner.id}}">{{project.project.owner.full_name}}</a></h3>
         <a style="color:black" href="//{{project.project.github_url}}" ng-if="project.project.github_url"><i class="fa fa-4x fa-github-square"></i></a>
         <a style="color:black" href="//{{project.project.youtube_url}}" ng-if="project.project.youtube_url"><i class="fa fa-4x fa-youtube-square"></i></a>
     </div>

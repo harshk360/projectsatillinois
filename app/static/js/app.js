@@ -120,6 +120,7 @@ angular.module('projects')
         $http
             .get('api/user/' + $routeParams.profileId)
             .success(function(value) {
+                console.log(value);
                 $http
                     .get('api/user/current')
                     .success(function(currUser) {
@@ -130,8 +131,8 @@ angular.module('projects')
                     });
                 $http
                     .get('/user/update')
-                    .success(function(value){
-                        $scope.updateForm = $sce.trustAsHtml(value);
+                    .success(function(html){
+                        $scope.updateForm = $sce.trustAsHtml(html);
                     })
             })
             .error(function(err) {

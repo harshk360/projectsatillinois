@@ -301,5 +301,8 @@ overflow: hidden;
 
 .non-semantic-protector { position: relative; z-index: 1; }
 
-.user-form-field {
+.update-button {
+    background-color: #EC443F;
+    border-color: white;
+    color:white;
 }

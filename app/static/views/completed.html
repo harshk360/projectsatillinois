@@ -6,7 +6,7 @@
         </div>
     </div>
     <div class="row" style="margin-left:40px">
-        <div class="panel panel-default project-pane col-md-5 text-center" ng-repeat="p in projects">
+        <div class="panel panel-default project-pane col-md-5 text-center" ng-repeat="p in projects" ng-click="go('/project/' + {{p.id}})">
             <div class="panel-body">
                 <img src="{{p.picture}}" class="img-responsive project-image" alt="Responsive image"/>
             </div>

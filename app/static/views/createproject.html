@@ -1,0 +1,30 @@
+<div class = "index container">
+    <div class="text-center">
+        <div class="btn-group" role="group" aria-label="..." style="align-content: center">
+            <button type="button" class="btn btn-default active">Completed</button>
+            <button type="button" class="btn btn-default" ng-click="go('/inprogress')">In Progress</button>
+        </div>
+    </div>
+
+<div class="row">
+        <div class="col-md-4 col-sm-6 text-center">
+            <form name="form" ng-submit="submitForm()">
+
+                <formfield type="text" name="name" label="Project Name" form="form"
+                           placeholder="Fancy Name"></formfield>
+                <formfield type="textarea" class="description" name="description" label="Project Description" form="form"
+                           placeholder="Markdown enabled"></formfield>
+                <div>
+                    <a class="markdown" href="https://help.github.com/articles/markdown-basics/" target="_blank">View Markdown
+                        Guide</a>
+                </div>
+                <div>
+                    <span ng-if="!form.values['description']">Course Description Preview</span>
+                    <div class="markdown-body" btf-markdown="form.values['description']"></div>
+                </div>
+
+                <input type="submit" name="submit" value="Create Project">
+            </form>
+        </div>
+    </div>
+</div>

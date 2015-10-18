@@ -40,7 +40,8 @@ def update_project_status_by_id(id, status):
   if id != session['id']:
     return jsonify(error="User does not own project"), 403
   project = Project.query.filter_by(id=id).first()
-  if status not in ['IN_PROGRESS','COMPLETED', 'DELETED']:
+  status = status.upper()
+  if status not in Project.status.property.columns[0].type.enums:
     return jsonify(error="Invalid status"), 400
   project.status = status
   try:

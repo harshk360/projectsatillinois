@@ -14,11 +14,14 @@ class User(db.Model):
   github_auth = db.Column(db.String(255))
   fb_id = db.Column(db.String(255))
   avatar = db.Column(db.String(255))
-  academic_major = db.Column(db.String(255))
-  graduation_month = db.Column(mysql.INTEGER(2))
-  graduation_year = db.Column(mysql.INTEGER(4))
+  major = Enum('Computer Science', 'Electical Engineering', 'Other')
+  academic_major = db.Column(major)
+  month = Enum('May','December')
+  year = Enum('2015', '2016', '2017', '2018', '2019', '2020')
+  graduation_month = db.Column(month)
+  graduation_year = db.Column(year)
   description = db.Column(mysql.MEDIUMTEXT())
-  is_admin = db.Column(db.Boolean(), nullable=False, default=False)
+  is_admin = db.Column(db.Boolean(), nullable=True, default=False)
 
   def __init__(self, full_name="", fb_id="", email=""):
     self.full_name = full_name

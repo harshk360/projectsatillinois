@@ -1,0 +1,27 @@
+{% macro render_bootstrap_field(field) %}
+
+<div class="form-group {% if field.errors %} error {% endif %}">
+    <label class="col-lg-2 control-label">{{ field.label }}</label>
+
+    <div class="col-lg-8">
+        {{ field(class='form-control')|safe }}
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <span class="help-inline">[{{ error }}]</span><br>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+<form method="POST" action="{{url}}">
+    {{ form.hidden_tag() }}
+    {{ render_bootstrap_field(form.name) }}
+    {{ render_bootstrap_field(form.status) }}
+    {{ render_bootstrap_field(form.cost) }}
+    {{ render_bootstrap_field(form.youtube_url) }}
+    {{ render_bootstrap_field(form.github_url) }}
+    {{ render_bootstrap_field(form.description) }}
+    {{ render_bootstrap_field(form.skills) }}
+    <input type="submit" value="Go">
+</form>

@@ -55,7 +55,7 @@ def update_project_status_by_id(id, status):
     return jsonify(error=str(e)), 500
 
 @app.route('/project/edit/<int:id>', methods = ['GET', 'POST'])
-def create_new_project(id):
+def edit_project(id):
   MyForm = model_form(Project, base_class=Form, exclude_fk=True, db_session=db.session, field_args={
     'description': {'widget': TextArea()},
     'youtube_url': {'validators': [valid_youtube_link]},
@@ -77,12 +77,34 @@ def create_new_project(id):
     return redirect(url_for("index"))
   return render_template("create_project.html", form=form, url = "/project/edit/" + str(id))
 
+@app.route('/project/add', methods = ['GET', 'POST'])
+def create_new_project():
+  MyForm = model_form(Project, base_class=Form, exclude_fk=True, db_session=db.session, field_args={
+    'description': {'widget': TextArea()},
+    'youtube_url': {'validators': [valid_youtube_link]},
+    'github_url': {'validators': [valid_github_link]}
+  })
+  project = Project()
+  form = MyForm(request.form, project)
+  if form.validate_on_submit():
+    project.owner_id = session['id']
+    project.name = form.name.data
+    project.status = form.status.data
+    project.cost = form.cost.data
+    project.youtube_url = form.youtube_url.data
+    project.github_url = form.github_url.data
+    project.description = form.description.data
+    project.skills = form.skills.data
+    db.session.commit()
+    return redirect(url_for("index"))
+  return render_template("create_project.html", form=form, url = "/project/add")
+
 def valid_youtube_link(form, field):
-  if form.youtube_url.data is not None:
+  if form.youtube_url.data is not None and len(form.youtube_url.data) > 0:
     if not form.youtube_url.data.startswith("https://www.youtube.com"):
       raise ValidationError('Youtube link must start with https://www.youtube.com')
 
 def valid_github_link(form, field):
-  if form.github_url.data is not None:
+  if form.github_url.data is not None and len(form.github_url.data) > 0:
     if not form.github_url.data.startswith("https://www.github.com"):
       raise ValidationError('Github link must start with https://www.github.com')

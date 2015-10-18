@@ -18,7 +18,7 @@
                         <h3 style="margin-top:5px; text-align: center">{{p.name}}</h3>
                         <div class="col-sm-9" style="text-align: left">
                             <p class="truncate">{{p.description}}</p>
-                            <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="skill in p.skills">{{skill.skill.name}}</span></div>
+                            <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="s in p.skills">{{s.name}}</span></div>
                         </div>
                         <div class="col-sm-3"  style="text-align: center;">
                             <img src="{{p.owner.avatar}}" class="img-responsive img-circle" alt="{{p.owner.full_name}}" style="max-width:75%; margin: auto; display: block;"/>

@@ -6,6 +6,40 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from app_and_db import db
 from datetime import datetime
 
+class User_Skill(db.Model):
+  __tablename__ = "user_skills"
+  id = db.Column(db.Integer, primary_key=True)
+  user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
+  skill_id = db.Column(db.Integer(), ForeignKey("skills.id"), nullable=False)
+
+  def serialize(self):
+    return {
+      'skill' : self.skill.serialize()
+    }
+
+  def __str__(self):
+    return self.skill.__str__()
+
+class Project_Skill(db.Model):
+  __tablename__ = "project_skills"
+  id = db.Column(db.Integer, primary_key=True)
+  project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=False)
+  skill_id = db.Column(db.Integer(), ForeignKey("skills.id"), nullable=False)
+
+  def serialize(self):
+    return {
+      'skill' : self.skill.serialize()
+    }
+
+  def __str__(self):
+    return self.skill.__str__()
+
+class User_Project(db.Model):
+  __tablename__ = "user_projects"
+  id = db.Column(db.Integer, primary_key=True)
+  user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
+  project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=False)
+
 class User(db.Model):
   __tablename__ = "users"
   id = db.Column(db.Integer, primary_key=True)
@@ -22,6 +56,8 @@ class User(db.Model):
   graduation_year = db.Column(year)
   description = db.Column(mysql.MEDIUMTEXT())
   is_admin = db.Column(db.Boolean(), nullable=True, default=False)
+
+  skills = db.relationship("Skill", secondary="user_skills", backref="users")
 
   def __init__(self, full_name="", fb_id="", email=""):
     self.full_name = full_name
@@ -79,10 +115,10 @@ class Project(db.Model):
   github_url = db.Column(db.String(255))
   description = db.Column(mysql.MEDIUMTEXT())
   owner_id = db.Column(db.Integer(), ForeignKey("users.id"))
-  owner = db.relationship("User")
-  images = db.relationship("Image")
-  skills = db.relationship("Project_Skill")
-  comments = db.relationship("Comment")
+  owner = db.relationship("User", backref="projects")
+  images = db.relationship("Image", backref="projects")
+  skills = db.relationship("Skill", secondary="project_skills", backref="projects")
+  comments = db.relationship("Comment", backref="projects")
 
   def __str__(self):
     return self.name
@@ -102,14 +138,6 @@ class Project(db.Model):
       'comments' : [comment.serialize() for comment in self.comments]
     }
 
-class User_Project(db.Model):
-  __tablename__ = "user_projects"
-  id = db.Column(db.Integer, primary_key=True)
-  user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
-  project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=False)
-  user = db.relationship("User")
-  project = db.relationship("Project")
-
 class Image(db.Model):
   __tablename__ = "images"
   id = db.Column(db.Integer, primary_key=True)
@@ -117,7 +145,6 @@ class Image(db.Model):
   url = db.Column(db.String(255))
   file_name = db.Column(db.String(255))
   image_name = db.Column(db.String(255), nullable=False)
-  project = db.relationship("Project")
 
   def serialize(self):
     return {
@@ -132,8 +159,7 @@ class Comment(db.Model):
   user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
   timestamp = db.Column(db.TIMESTAMP(), default=func.now(), nullable=False)  
   comment = db.Column(mysql.MEDIUMTEXT(), nullable=False)
-  user = db.relationship("User")
-  project = db.relationship("Project")
+  user = db.relationship("User", backref="comments")
 
   def serialize(self):
     return {
@@ -162,29 +188,3 @@ class Skill(db.Model):
 
   def __str__(self):
     return self.name
-
-class User_Skill(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
-  user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
-  skill_id = db.Column(db.Integer(), ForeignKey("skills.id"), nullable=False)
-  user = db.relationship("User")
-  skill = db.relationship("Skill")
-  def serialize(self):
-    return {
-      'skill' : self.skill.serialize()
-    }
-
-class Project_Skill(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
-  project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=False)
-  skill_id = db.Column(db.Integer(), ForeignKey("skills.id"), nullable=False)
-  skill = db.relationship("Skill")
-  project = db.relationship("Project")
-
-  def serialize(self):
-    return {
-      'skill' : self.skill.serialize()
-    }
-
-  def __str__(self):
-    return self.skill.__str__()

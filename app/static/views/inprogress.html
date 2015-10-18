@@ -5,6 +5,9 @@
             <button type="button" class="btn btn-default active">In Progress</button>
         </div>
     </div>
+    <button type="button" class="btn update-button" data-toggle="modal" data-target="#myModal" style="float:right">
+        Create Project
+    </button>
     <div class="row"  style="margin-top:20px">
         <div class="col-md-4 col-sm-6 text-center" ng-repeat="p in projects">
             <div class = "panel panel-default">
@@ -24,6 +27,17 @@
                             <a style="color:black" href="//{{p.youtube_url}}" ng-if="p.youtube_url"><i class="fa fa-2x fa-youtube-square"></i></a>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-center">
+                <div class="modal-body">
+                    <div ng-bind-html="createProjectForm" class="modal-body"></div>
                 </div>
             </div>
         </div>

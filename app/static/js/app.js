@@ -104,6 +104,12 @@ angular.module('projects')
             $location.path( path );
         };
 
+        $http
+            .get('/project/add')
+            .success(function(html){
+                $scope.createProjectForm = $sce.trustAsHtml(html);
+            })
+
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.project = {};

@@ -1,6 +1,7 @@
 <div class="row" style="margin-top:55px">
     <img ng-src="{{project.images[0].url}}" class="center-block" style="height:300px;width:auto">
-    <div style="text-align:center">
+    <div ng-bind-html="updateProject" ng-show="setEditable" style="margin-top: 20px"></div>
+    <div style="text-align:center" ng-hide="setEditable">
         <h1>{{project.project.name}}</h1>
         <p>{{project.project.description}}</p>
         <h3>Status: {{project.project.status}}</h3>

@@ -115,15 +115,30 @@ angular.module('projects')
                 console.log(err);
             });
     })
-    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route) {
+    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.user = {};
         $http
             .get('api/user/' + $routeParams.profileId)
             .success(function(value) {
-                $scope.user = value;
-                console.log(value)
+                $http
+                    .get('api/user/current')
+                    .success(function(currUser) {
+                        if (currUser.id == value.id) {
+                            $scope.setEditable = true;
+                        }
+                        $scope.user = value;
+                    });
+                $http
+                    .get('/user/update')
+                    .success(function(value){
+                        $scope.updateForm = $sce.trustAsHtml(value);
+                    })
             })
             .error(function(err) {
                 console.log(err);
             });
+
+        $scope.updateUserDetails = function() {
+
+        }
     });

@@ -2,25 +2,26 @@ from flask import Flask
 from flask import jsonify, redirect, render_template, request, session, url_for
 from flask.ext import admin
 from flask.ext.sqlalchemy import SQLAlchemy
-from sqlalchemy import asc
-from sqlalchemy.sql import func
 from sqlalchemy.orm.exc import NoResultFound
-from config import BaseConfig
-from math import ceil
 from app_and_db import app, db
 from models import User, Visit, Project
 
 @app.before_request
 def log_request():
   id = None
+  project_id = None
   if 'id' in session:
     id = session['id']
-  if "favicon" in request.path or "static" in request.path or "admin" in request.path or "api" in request.path:
+  if "favicon" in request.path or "static" in request.path or "admin" in request.path:
     return
-  # TODO: check if url_rule is project   
-  visit = Visit(id, None, None, request.remote_addr, request.path)
-  db.session.add(visit)
-  db.session.commit()
+  if "/api/v1/project/<int:id>" in str(request.url_rule):
+    project_id = request.path[request.path.rfind('/') + 1:]
+  try:
+    visit = Visit(id, project_id, None, request.remote_addr, request.path)
+    db.session.add(visit)
+    db.session.commit()
+  except:
+    db.session.rollback()
 
 @app.route('/')
 def index():
@@ -29,17 +30,6 @@ def index():
 @app.errorhandler(404)
 def is404(e):
   return render_template('error.html', e = e)
-
-@app.route('/api/v1/project', defaults={'page': 1})
-@app.route('/api/v1/projects/', defaults={'page': 1})
-@app.route('/api/v1/projects/page/<int:page>')
-def get_events(page):
-    number_per_page = 8
-    start_index = ((page - 1) * number_per_page)
-    projects = Project.query.order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
-    end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
-
-    return jsonify(projects=[project.serialize() for project in projects], page = page, number_of_pages = int(end_page))
 
 @app.route('/api/user/current')
 def get_current_user():

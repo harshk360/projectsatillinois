@@ -5,8 +5,9 @@ def init_app(app, db):
   #setup db credentials
   app.config.from_object(BaseConfig)
 
-  #import views
+  #import routes
   import facebook_login
+  import projects_routes
 
   #setup admin
   from models import *

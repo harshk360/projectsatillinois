@@ -76,6 +76,9 @@ class Project(db.Model):
   description = db.Column(mysql.MEDIUMTEXT())
   owner = db.Column(db.Integer(), ForeignKey("users.id"))
 
+  def __str__(self):
+    return self.name
+
   def serialize(self):
     return {
       'id' : self.id,
@@ -103,6 +106,12 @@ class Image(db.Model):
   file_name = db.Column(db.String(255))
   image_name = db.Column(db.String(255), nullable=False)
   project = db.relationship("Project")
+
+  def serialize(self):
+    return {
+      'url' : self.url,
+      'image_name' : self.image_name
+    }
 
 class Comment(db.Model):
   __tablename__ = "comments"

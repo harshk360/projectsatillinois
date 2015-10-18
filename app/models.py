@@ -123,6 +123,15 @@ class Comment(db.Model):
   user = db.relationship("User")
   project = db.relationship("Project")
 
+  def serialize(self):
+    return {
+      'comment' : self.comment,
+      'user' : self.user.serialize()
+    }
+
+  def __str__(self):
+    return self.comment
+
 class Skill(db.Model):
   __tablename__ = "skills"
   id = db.Column(db.Integer, primary_key=True)

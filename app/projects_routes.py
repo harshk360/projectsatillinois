@@ -1,7 +1,7 @@
 from app_and_db import app, db
 from flask import jsonify, redirect, render_template, request, session, url_for
 from math import ceil
-from models import Project, Image
+from models import Project, Image, Comment
 from sqlalchemy import asc
 from sqlalchemy.sql import func
 
@@ -19,4 +19,5 @@ def get_projects(page):
 def get_project_by_id(id):
   project = Project.query.filter_by(id=id).first()
   images = Image.query.filter_by(project_id=id).all()
-  return jsonify(project = project.serialize(), images = [image.serialize() for image in images])
+  comments = Comment.query.filter_by(project_id=id).order_by(asc(Comment.timestamp)).all()
+  return jsonify(project = project.serialize(), images = [image.serialize() for image in images], comments = [comment.serialize() for comment in comments])

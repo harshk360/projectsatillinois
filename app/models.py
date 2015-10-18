@@ -182,3 +182,6 @@ class Project_Skill(db.Model):
     return {
       'skill' : self.skill.serialize()
     }
+
+  def __str__(self):
+    return self.skill.__str__()

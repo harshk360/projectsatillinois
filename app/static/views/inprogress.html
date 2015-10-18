@@ -8,12 +8,22 @@
     <div class="row">
         <div class="col-md-4 col-sm-6 text-center" ng-repeat="p in projects">
             <div class = "panel panel-default">
-                <div class="panel-body">
-                    <img src="{{p.picture}}" class="img-responsive project-image" alt="Responsive image"/>
+                <div class="panel-body" style="background: url('{{p.images[0].url}}') no-repeat; background-size: cover; background-position: center; height: 300px">
                 </div>
                 <div class="panel-footer">
-                    <h4>{{p.name}}</h4>
-                    <p class="truncate">{{p.description}}</p>
+                    <div class="row">
+                        <h3 style="margin-top:5px; text-align: center">{{p.name}}</h3>
+                        <div class="col-sm-9" style="text-align: left">
+                            <p class="truncate">{{p.description}}</p>
+                            <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="skill in p.skills">{{skill.skill.name}}</span></div>
+                        </div>
+                        <div class="col-sm-3"  style="text-align: center;">
+                            <img src="{{p.owner.avatar}}" class="img-responsive img-circle" alt="{{p.owner.full_name}}" style="max-width:75%; margin: auto; display: block;"/>
+                            <h5>{{p.owner.full_name}}</h5>
+                            <a style="color:black" href="//{{p.github_url}}" ng-if="p.github_url"><i class="fa fa-2x fa-github-square"></i></a>
+                            <a style="color:black" href="//{{p.youtube_url}}" ng-if="p.youtube_url"><i class="fa fa-2x fa-youtube-square"></i></a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

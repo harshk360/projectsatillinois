@@ -11,11 +11,22 @@ from wtforms.ext.sqlalchemy.orm import model_form
 @app.route('/api/v1/projects/', defaults={'page': 1})
 @app.route('/api/v1/projects/page/<int:page>')
 def get_projects(page):
-    number_per_page = 8
-    start_index = ((page - 1) * number_per_page)
-    projects = Project.query.filter(Project.status!="DELETED").order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
-    end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
-    return jsonify(projects=[project.serialize() for project in projects], page = page, number_of_pages = int(end_page))
+  number_per_page = 8
+  start_index = ((page - 1) * number_per_page)
+  projects = Project.query.filter(Project.status!="DELETED").order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
+  end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
+  return jsonify(projects=[project.serialize() for project in projects], page = page, number_of_pages = int(end_page))
+
+@app.route('/api/v1/project/<string:status>', defaults={'page': 1})
+@app.route('/api/v1/projects/<string:status>', defaults={'page': 1})
+@app.route('/api/v1/projects/page/<int:page>/<string:status>')
+def get_projects_by_status(page, status):
+  status = status.upper()
+  number_per_page = 8
+  start_index = ((page - 1) * number_per_page)
+  projects = Project.query.filter(Project.status==status).order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
+  end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
+  return jsonify(projects=[project.serialize() for project in projects], page = page, number_of_pages = int(end_page))
 
 @app.route('/api/v1/project/<int:id>')
 def get_project_by_id(id):

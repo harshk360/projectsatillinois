@@ -29,6 +29,7 @@ class MyAdminView(admin.AdminIndexView):
     return self.render('admin/index.html', users = users, projects = projects, visits = visits, comments = comments)
 
 class ModelViewAuth(flask_admin.contrib.sqla.ModelView):
+  column_hide_backrefs = False
   def is_accessible(self):
     try:
       user = User.query.filter_by(id=session['id']).first()

@@ -97,7 +97,7 @@ angular.module('projects')
         };
 
     })
-    .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route) {
+    .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.project = {};
 
         $http
@@ -109,7 +109,20 @@ angular.module('projects')
                     value.project.status = "Completed";
                 }
                 $scope.project = value;
-                console.log(value);
+                console.log(value)
+
+                $http
+                    .get('api/user/current')
+                    .success(function(currUser) {
+                        if (currUser.id == value.project.owner.id) {
+                            $scope.setEditable = true;
+                        }
+                    });
+                $http
+                    .get('/project/edit/' + $routeParams.projectId)
+                    .success(function(html){
+                        $scope.updateProject = $sce.trustAsHtml(html);
+                    })
             })
             .error(function(err) {
                 console.log(err);
@@ -138,8 +151,4 @@ angular.module('projects')
             .error(function(err) {
                 console.log(err);
             });
-
-        $scope.updateUserDetails = function() {
-
-        }
     });

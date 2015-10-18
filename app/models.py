@@ -93,6 +93,10 @@ class Skill(db.Model):
   name = db.Column(db.String(255), nullable=False)
   type = db.Column(db.String(255), nullable=False)
 
+  def __init__(self, name, type):
+    self.name = name
+    self.type = type
+
 class User_Skill(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)

@@ -2,7 +2,8 @@
 
 angular
     .module('projects', [
-        'ngRoute'
+        'ngRoute',
+        'ui.bootstrap'
     ])
     .config(function ($routeProvider) {
         $routeProvider
@@ -72,6 +73,7 @@ angular.module('projects')
 
     })
     .controller('CompletedCtrl', function ($scope, $http, $routeParams, $location) {
+
         $http
             .get('api/v1/projects/COMPLETED')
             .success(function(value) {
@@ -96,9 +98,20 @@ angular.module('projects')
 
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route) {
+        $scope.project = {};
+
         $http
-            .get('api/v1/projects')
+            .get('api/v1/project/' + $routeParams.projectId)
             .success(function(value) {
-                $scope.projects = value.projects;
+                if (value.project.status === "IN_PROGRESS") {
+                    value.project.status = "In Progress";
+                } else {
+                    value.project.status = "Completed";
+                }
+                $scope.project = value;
+                console.log(value);
+            })
+            .error(function(err) {
+                console.log(err);
             });
     });

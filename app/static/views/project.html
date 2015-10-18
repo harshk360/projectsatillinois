@@ -1,8 +1,11 @@
 <div class="row" style="margin-top:55px">
-    <img src="{{project.picture}}" height="350px" width="auto" class="center-block" style="margin-top:20px" />
+    <img ng-src="{{project.images[0].url}}" class="center-block" style="height:300px;width:auto">
     <div style="text-align:center">
-        <h1>{{project.name}}</h1>
-        <p>{{project.description}}</p>
-        <h3>Status: <span ng-if="project.completed" style="color: green">Completed</span><span ng-if="!project.completed" style="color:red">In Progress</span></h3>
+        <h1>{{project.project.name}}</h1>
+        <p>{{project.project.description}}</p>
+        <h3>Status: {{project.project.status}}</h3>
+        <h3>Owner: {{project.project.owner.full_name}}</h3>
+        <a style="color:black" href="//{{project.project.github_url}}" ng-if="project.project.github_url"><i class="fa fa-4x fa-github-square"></i></a>
+        <a style="color:black" href="//{{project.project.youtube_url}}" ng-if="project.project.youtube_url"><i class="fa fa-4x fa-youtube-square"></i></a>
     </div>
 </div>

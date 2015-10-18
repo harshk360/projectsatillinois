@@ -8,7 +8,10 @@
     <div class="row">
         <div class="col-md-4 col-sm-6 text-center" ng-repeat="p in projects">
             <div class = "panel panel-default">
-                <div class="panel-body" style="background: url('{{p.images[0].url}}') no-repeat; background-size: cover; background-position: center; height: 300px">
+                <div class="panel-body non-semantic-protector" style="background: url('{{p.images[0].url}}') no-repeat; background-size: cover; background-position: center; height: 300px">
+                    <h1 class="ribbon ribbon-project">
+                        <a href="#" class="ribbon-content">Edit Your Project</a>
+                    </h1>
                 </div>
                 <div class="panel-footer">
                     <div class="row">

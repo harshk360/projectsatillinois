@@ -8,6 +8,7 @@ def init_app(app, db):
   #import routes
   import facebook_login
   import projects_routes
+  import user_routes
 
   #setup admin
   from models import *

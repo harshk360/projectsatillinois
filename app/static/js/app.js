@@ -75,7 +75,6 @@ angular.module('projects')
         $http
             .get('api/v1/projects/COMPLETED')
             .success(function(value) {
-                console.log(value);
                 $scope.projects = value.projects;
             });
 
@@ -97,11 +96,9 @@ angular.module('projects')
 
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route) {
-        $scope.project = {
-            name: "Berwin For President",
-            description: "Berwin 2016.",
-            picture: "https://scontent-ord1-1.xx.fbcdn.net/hphotos-xat1/v/t1.0-9/11350732_10207699662912723_1646685888682476380_n.jpg?oh=ad89e16c1a884d1aaac7f4a403b19a50&oe=5689DB7F",
-            id: "1234",
-            completed: true
-        };
+        $http
+            .get('api/v1/projects')
+            .success(function(value) {
+                $scope.projects = value.projects;
+            });
     });

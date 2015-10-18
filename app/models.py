@@ -1,6 +1,7 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects import mysql
 from sqlalchemy.sql import func
+from sqlalchemy.types import Enum
 from flask.ext.sqlalchemy import SQLAlchemy 
 from app_and_db import db
 from datetime import datetime
@@ -68,12 +69,23 @@ class Project(db.Model):
   __tablename__ = "projects"
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(255), nullable=False)
-  status = db.Column(db.String(255), nullable=False)
+  status = db.Column(Enum('IN_PROGRESS','COMPLETED'), nullable=False)
   cost = db.Column(db.DECIMAL(6, 2))
   youtube_url = db.Column(db.String(255))
   github_url = db.Column(db.String(255))
   description = db.Column(mysql.MEDIUMTEXT())
   owner = db.Column(db.Integer(), ForeignKey("users.id"))
+
+  def serialize(self):
+    return {
+      'id' : self.id,
+      'name' : self.name,
+      'status' : self.status,
+      'cost' : self.cost,
+      'youtube_url' : self.youtube_url,
+      'github_url' : self.github_url,
+      'description' : self.description
+    }
 
 class User_Project(db.Model):
   __tablename__ = "user_projects"

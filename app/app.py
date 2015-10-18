@@ -8,14 +8,14 @@ from sqlalchemy.orm.exc import NoResultFound
 from config import BaseConfig
 from math import ceil
 from app_and_db import app, db
-from models import User, Visit
+from models import User, Visit, Project
 
 @app.before_request
 def log_request():
   id = None
   if 'id' in session:
     id = session['id']
-  if "favicon" in request.path or "static" in request.path:
+  if "favicon" in request.path or "static" in request.path or "admin" in request.path or "api" in request.path:
     return
   # TODO: check if url_rule is project   
   visit = Visit(id, None, None, request.remote_addr, request.path)
@@ -30,14 +30,14 @@ def index():
 def is404(e):
   return render_template('error.html', e = e)
 
-@app.route('/api/project', defaults={'page': 1})
-@app.route('/api/projects/', defaults={'page': 1})
-@app.route('/api/projects/page/<int:page>')
+@app.route('/api/v1/project', defaults={'page': 1})
+@app.route('/api/v1/projects/', defaults={'page': 1})
+@app.route('/api/v1/projects/page/<int:page>')
 def get_events(page):
     number_per_page = 8
     start_index = ((page - 1) * number_per_page)
-    projects = Project.query.filter(Project.end_date >= func.now()).order_by(asc(Event.start_date)).offset(start_index).limit(number_per_page)
-    end_page = ceil(Project.query.filter(Project.end_date >= func.now()).count() / float(number_per_page))
+    projects = Project.query.order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
+    end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
 
     return jsonify(projects=[project.serialize() for project in projects], page = page, number_of_pages = int(end_page))
 

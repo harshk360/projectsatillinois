@@ -25,9 +25,8 @@ class User(db.Model):
     self.email = email
     self.avatar = "https://graph.facebook.com/{0}/picture?width=9999".format(fb_id)
 
-  def __repr__(self):
-    return '<User {0} {1}>'.format(self.first_name, self.last_name)
-
+  def __str__(self):
+    return self.full_name
 
   def serialize(self):
     return {
@@ -39,11 +38,12 @@ class User(db.Model):
 class Login(db.Model):
   __tablename__ = "logins"
   id = db.Column(db.Integer, primary_key=True)
-  user = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
+  user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
   timestamp = db.Column(db.TIMESTAMP(), default=func.now(), nullable=False)  
+  user = db.relationship("User")
 
-  def __init__(self, user, timestamp = datetime.now()):
-    self.user = user
+  def __init__(self, user_id, timestamp = datetime.now()):
+    self.user_id = user_id
     self.timestamp = timestamp 
 
 class Visit(db.Model):
@@ -53,6 +53,8 @@ class Visit(db.Model):
   project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=True)
   timestamp = db.Column(db.TIMESTAMP(), default=func.now(), nullable=False)  
   ip_address = db.Column(db.String(255), nullable = False)
+  user = db.relationship("User")
+  project = db.relationship("Project")
 
 class Project(db.Model):
   __tablename__ = "projects"
@@ -70,6 +72,8 @@ class User_Project(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
   project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=False)
+  user = db.relationship("User")
+  project = db.relationship("Project")
 
 class Image(db.Model):
   __tablename__ = "images"
@@ -78,6 +82,7 @@ class Image(db.Model):
   url = db.Column(db.String(255))
   file_name = db.Column(db.String(255))
   image_name = db.Column(db.String(255), nullable=False)
+  project = db.relationship("Project")
 
 class Comment(db.Model):
   __tablename__ = "comments"
@@ -86,6 +91,8 @@ class Comment(db.Model):
   user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
   timestamp = db.Column(db.TIMESTAMP(), default=func.now(), nullable=False)  
   comment = db.Column(mysql.MEDIUMTEXT(), nullable=False)
+  user = db.relationship("User")
+  project = db.relationship("Project")
 
 class Skill(db.Model):
   __tablename__ = "skills"
@@ -101,8 +108,12 @@ class User_Skill(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
   skill_id = db.Column(db.Integer(), ForeignKey("skills.id"), nullable=False)
+  user = db.relationship("User")
+  skill = db.relationship("Skill")
 
 class Project_Skill(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=False)
   skill_id = db.Column(db.Integer(), ForeignKey("skills.id"), nullable=False)
+  skill = db.relationship("Skill")
+  project = db.relationship("Project")

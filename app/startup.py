@@ -12,3 +12,12 @@ def init_app(app, db):
   from models import *
   admin = Admin(app, index_view=MyAdminView())
   admin.add_view(ModelViewAuth(User, db.session, name="Users"))
+  admin.add_view(ModelViewAuth(Project, db.session, name="Projects"))
+  admin.add_view(ModelViewAuth(Login, db.session, name="Logins"))
+  admin.add_view(ModelViewAuth(Visit, db.session, name="Visits"))
+  admin.add_view(ModelViewAuth(User_Project, db.session, name="Users to Projects"))
+  admin.add_view(ModelViewAuth(Image, db.session, name="Images"))
+  admin.add_view(ModelViewAuth(Comment, db.session, name="Comments"))
+  admin.add_view(ModelViewAuth(Skill, db.session, name="Skills"))
+  admin.add_view(ModelViewAuth(User_Skill, db.session, name="Skills to Users"))
+  admin.add_view(ModelViewAuth(Project_Skill, db.session, name="Skills to Projects"))

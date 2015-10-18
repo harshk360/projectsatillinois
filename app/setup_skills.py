@@ -29,10 +29,10 @@ skills = {
 
   'Python' : 'Programming Languages',
   'Java' : 'Programming Languages',
-  'C++' : 'Languages',
-  'C' : 'Languages',
-  'PHP' : 'Languages',
-  'C#' : 'Languages'
+  'C++' : 'Programming Languages',
+  'C' : 'Programming Languages',
+  'PHP' : 'Programming Languages',
+  'C#' : 'Programming Languages'
 }
 
 

@@ -75,7 +75,11 @@ class Project(db.Model):
   youtube_url = db.Column(db.String(255))
   github_url = db.Column(db.String(255))
   description = db.Column(mysql.MEDIUMTEXT())
-  owner = db.Column(db.Integer(), ForeignKey("users.id"))
+  owner_id = db.Column(db.Integer(), ForeignKey("users.id"))
+  owner = db.relationship("User")
+  images = db.relationship("Image")
+  skills = db.relationship("Project_Skill")
+  comments = db.relationship("Comment")
 
   def __str__(self):
     return self.name
@@ -85,10 +89,14 @@ class Project(db.Model):
       'id' : self.id,
       'name' : self.name,
       'status' : self.status,
-      'cost' : float(self.cost),
+      # 'cost' : float(self.cost),
       'youtube_url' : self.youtube_url,
       'github_url' : self.github_url,
-      'description' : self.description
+      'description' : self.description,
+      'owner' : self.owner.serialize(),
+      'images' : [image.serialize() for image in self.images],
+      'skills' : [skill.serialize() for skill in self.skills],
+      'comments' : [comment.serialize() for comment in self.comments]
     }
 
 class User_Project(db.Model):
@@ -143,12 +151,25 @@ class Skill(db.Model):
     self.name = name
     self.type = type
 
+  def serialize(self):
+    return {
+      'name' : self.name,
+      'type' : self.type
+    }
+
+  def __str__(self):
+    return self.name
+
 class User_Skill(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)
   skill_id = db.Column(db.Integer(), ForeignKey("skills.id"), nullable=False)
   user = db.relationship("User")
   skill = db.relationship("Skill")
+  def serialize(self):
+    return {
+      'skill' : self.skill.serialize()
+    }
 
 class Project_Skill(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -156,3 +177,8 @@ class Project_Skill(db.Model):
   skill_id = db.Column(db.Integer(), ForeignKey("skills.id"), nullable=False)
   skill = db.relationship("Skill")
   project = db.relationship("Project")
+
+  def serialize(self):
+    return {
+      'skill' : self.skill.serialize()
+    }

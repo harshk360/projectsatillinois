@@ -6,29 +6,30 @@ angular
     ])
     .config(function ($routeProvider) {
         $routeProvider
-            .when('/home/:pageId', {
-                templateUrl: 'static/views/home.html',
-                controller: 'HomeCtrl'
+            .when('/completed', {
+                templateUrl: 'static/views/completed.html',
+                controller:'CompletedCtrl'
+            })
+            .when('/inprogress', {
+                templateUrl: 'static/views/inprogress.html',
+                controller: 'InProgressCtrl'
             })
             .when('/profile/:profileId', {
                 templateUrl: 'static/views/profile.html',
                 controller: 'ProfileCtrl'
             })
-            .when('/event/:eventId', {
-                templateUrl: 'static/views/event.html',
-                controller: 'EventCtrl'
+            .when('/project/:projectId', {
+                templateUrl: 'static/views/project.html',
+                controller: 'ProjectCtrl'
             })
-            .otherwise({
-                templateUrl: 'static/views/home.html',
-                controller: 'HomeCtrl'
-            });
+            .otherwise('/completed');
     });
 
 angular.module('projects')
     .controller('NavCtrl', function($scope, $http, $location) {
 
         $scope.user = "";
-
+        /**
         $http
             .get('api/user/current')
             .success(function(value){
@@ -69,75 +70,71 @@ angular.module('projects')
                     $scope.loggedIn = false;
                 })
         };
-    })
-    .controller('HomeCtrl', function ($scope, $http, $routeParams) {
-        if ($routeParams.pageId === undefined){
-            $routeParams.pageId = 1;
-        }
-        $http
-            .get('/api/projects/page/' + $routeParams.pageId)
-            .success(function(res){
-                $scope.projects = res.projects;
-                $scope.number_of_pages = new Array(res.number_of_pages);
-                $scope.current_page = parseInt($routeParams.pageId);
-                //TODO: More Error Handling
-            }
-        );
+        */
 
     })
-    .controller('ProfileCtrl', function ($scope, $http, $routeParams) {
-        $http
-            .get('/api/user/' + $routeParams.profileId)
-            .success(function(routeUser){
-                $http
-                    .get('/api/user/current')
-                    .success(function(currUser){
-                        if (currUser.id === routeUser.id){
-                            $scope.setEditable = true;
-                            $scope.user = currUser;
-                        }else{
-                            $scope.setEditable = false;
-                            $scope.user = routeUser;
-                        }
-                    });
-            });
+    .controller('CompletedCtrl', function ($scope, $http, $routeParams, $location) {
+        $scope.projects = [
+            {
+                name: "Berwin For President",
+                description: "Berwin 2016.",
+                picture: "https://scontent-ord1-1.xx.fbcdn.net/hphotos-xat1/v/t1.0-9/11350732_10207699662912723_1646685888682476380_n.jpg?oh=ad89e16c1a884d1aaac7f4a403b19a50&oe=5689DB7F",
+                id: "1234"
+            },
+            {
+                name: "Berwin For President",
+                description: "Berwin 2016.",
+                picture: "https://scontent-ord1-1.xx.fbcdn.net/hphotos-xat1/v/t1.0-9/11350732_10207699662912723_1646685888682476380_n.jpg?oh=ad89e16c1a884d1aaac7f4a403b19a50&oe=5689DB7F",
+                id: "1234"
+            },
 
-        $scope.updateInfomation = function(){
-            var obj = {academic_major:$scope.user.academic_major, graduation_year: $scope.user.graduation_year}
-            $http
-                .post('/api/user/current/update',obj)
-                .success(function(){
-                    alert("Successfully updated!")
-                })
-        }
+        ];
+
+        $scope.go = function ( path ) {
+            $location.path( path );
+        };
     })
-    .controller('EventCtrl', function ($scope, $routeParams, $http, $route) {
+    .controller('InProgressCtrl', function ($scope, $http, $routeParams, $location) {
 
-        $http
-            .get('/api/project/' + $routeParams.eventId)
-            .success(function(res) {
-                $scope.event = res;
-            
-            });
-        $http
-            .get('api/user/current')
-            .success(function(value){
-                 if (value.error){
-                     $scope.loggedIn = false;
-                 }else{
-                     $scope.user = value;
-                     $scope.loggedIn = true;
-                     $scope.user_id = value.id;
-                 }
-            });
-        $scope.changeStatus = function(status){
-            $http
-                .get('/api/event/' + $routeParams.eventId + '/signup/' + $scope.user_id + "/" + status)
-                .success(function (res){
-                    $scope.status = res.status;
-                    console.log(res);
-                    $route.reload();
+        $scope.projects = [
+            {
+                name: "Donald For President",
+                description: "Vote for Berwin Instead 2016.",
+                picture: "http://static6.businessinsider.com/image/55918b77ecad04a3465a0a63/nbc-fires-donald-trump-after-he-calls-mexicans-rapists-and-drug-runners.jpg"
+            },
+            {
+                name: "Donald For President",
+                description: "Vote for Berwin Instead 2016.",
+                picture: "http://static6.businessinsider.com/image/55918b77ecad04a3465a0a63/nbc-fires-donald-trump-after-he-calls-mexicans-rapists-and-drug-runners.jpg"
+            },
+            {
+                name: "Donald For President",
+                description: "Vote for Berwin Instead 2016.",
+                picture: "http://static6.businessinsider.com/image/55918b77ecad04a3465a0a63/nbc-fires-donald-trump-after-he-calls-mexicans-rapists-and-drug-runners.jpg"
+            },
+            {
+                name: "Donald For President",
+                description: "Vote for Berwin Instead 2016.",
+                picture: "http://static6.businessinsider.com/image/55918b77ecad04a3465a0a63/nbc-fires-donald-trump-after-he-calls-mexicans-rapists-and-drug-runners.jpg"
+            },
+            {
+                name: "Donald For President",
+                description: "Vote for Berwin Instead 2016.",
+                picture: "http://static6.businessinsider.com/image/55918b77ecad04a3465a0a63/nbc-fires-donald-trump-after-he-calls-mexicans-rapists-and-drug-runners.jpg"
+            },
+        ];
 
-            });
+        $scope.go = function ( path ) {
+            $location.path( path );
+        };
+
+    })
+    .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route) {
+        $scope.project = {
+            name: "Berwin For President",
+            description: "Berwin 2016.",
+            picture: "https://scontent-ord1-1.xx.fbcdn.net/hphotos-xat1/v/t1.0-9/11350732_10207699662912723_1646685888682476380_n.jpg?oh=ad89e16c1a884d1aaac7f4a403b19a50&oe=5689DB7F",
+            id: "1234",
+            completed: true
         };
     });

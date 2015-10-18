@@ -5,7 +5,7 @@ html, body {
     width: 100%; 
     height: 100%;
     font-family: 'BrandonReg';
-    background-color: ##4d4d4d;
+    background-color: #F0F0F0;
 }
 
 h1, h2 {
@@ -33,7 +33,6 @@ nav {
 }
 
 .navbar-fixed-top {
-    border-bottom: 16px solid white;
     z-index: 9999999;
 }
 
@@ -98,7 +97,7 @@ nav {
 
 .index {
     height: 100%;
-    margin-top: 66px;
+    margin-top: 20px;
 }
 
 /* Picture Header */
@@ -462,4 +461,25 @@ overflow: hidden;
     M22=0.7071067811865483,
     SizingMethod='auto expand'
   );
+}
+
+.project-pane{
+    height: 300px;
+    width: 300px;
+    margin: 20px;
+}
+
+.truncate {
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height:170px;
+    width:auto;
 }

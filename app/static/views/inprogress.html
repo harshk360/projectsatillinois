@@ -9,14 +9,8 @@
             Create Project
         </button>
     </div>
-<<<<<<< HEAD
-    <button type="button" class="btn update-button" data-toggle="modal" data-target="#myModal" style="float:right">
-        Create Project
-    </button>
-    <div class="row"  style="margin-top:20px">
-=======
+
     <div class="row" style="margin-top:20px">
->>>>>>> 90fc4dc6f9645159c4b258b24a1ecdd0948685bd
         <div class="col-md-4 col-sm-6 text-center" ng-repeat="p in projects">
             <div class="panel-body non-semantic-protector" style="background: url('{{p.images[0].url}}') no-repeat; background-size: cover; background-position: center; height: 300px">
             </div>
@@ -44,20 +38,10 @@
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content text-center">
-<<<<<<< HEAD
-                <div class="modal-body">
-                    <div ng-bind-html="createProjectForm" class="modal-body"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-=======
                 <div class="modal-body" ng-bind-html="createProjectForm"></div>
 
                 <button data-dismiss="modal" class="btn">Cancel</button>
             </div>
         </div>
     </div>
-    
->>>>>>> 90fc4dc6f9645159c4b258b24a1ecdd0948685bd
 </div>

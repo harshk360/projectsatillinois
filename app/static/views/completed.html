@@ -4,12 +4,18 @@
             <button type="button" class="btn btn-default active">Completed</button>
             <button type="button" class="btn btn-default" ng-click="go('/inprogress')">In Progress</button>
         </div>
+
+        <button type="button" class="btn update-button" data-toggle="modal" data-target="#myModal" style="float:right">
+            Create Project
+        </button>
+    </div>
+    <div>
     </div>
     <div class="row" style="margin-top:20px">
         <div class="col-md-4 col-sm-6 text-center" ng-repeat="p in projects">
+            <div class="panel-body non-semantic-protector" style="background: url('{{p.images[0].url}}') no-repeat; background-size: cover; background-position: center; height: 300px">
+            </div>
             <div class = "panel panel-default">
-                <div class="panel-body" style="background: url('{{p.images[0].url}}') no-repeat; background-size: cover; background-position: center; height: 300px">
-                </div>
                 <div class="panel-footer">
                     <div class="row">
                         <a href="#/project/{{p.id}}"><h3 style="margin-top:5px; text-align: center" >{{p.name}}</h3></a>
@@ -28,4 +34,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-center">
+                <div class="modal-body" ng-bind-html="createProjectForm"></div>
+
+                <button data-dismiss="modal" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
 </div>

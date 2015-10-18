@@ -73,6 +73,7 @@ def edit_project(id):
     project.github_url = form.github_url.data
     project.description = form.description.data
     project.skills = form.skills.data
+    db.session.add(project)
     db.session.commit()
     return redirect(url_for("index"))
   return render_template("create_project.html", form=form, url = "/project/edit/" + str(id))

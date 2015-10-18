@@ -72,7 +72,7 @@ angular.module('projects')
         
 
     })
-    .controller('CompletedCtrl', function ($scope, $http, $routeParams, $location) {
+    .controller('CompletedCtrl', function ($scope, $http, $routeParams, $location, $sce) {
 
         $http
             .get('api/v1/projects/COMPLETED')
@@ -83,6 +83,14 @@ angular.module('projects')
         $scope.go = function ( path ) {
             $location.path( path );
         };
+
+        $http
+            .get('/project/add')
+            .success(function(html){
+                $scope.createProjectForm = $sce.trustAsHtml(html);
+            })
+
+
     })
     .controller('InProgressCtrl', function ($scope, $http, $routeParams, $location) {
 
@@ -109,7 +117,7 @@ angular.module('projects')
                     value.project.status = "Completed";
                 }
                 $scope.project = value;
-                console.log(value)
+                console.log(value);
 
                 $http
                     .get('api/user/current')

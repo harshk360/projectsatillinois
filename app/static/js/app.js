@@ -37,8 +37,8 @@ angular.module('projects')
                  }else{
                      $scope.loggedIn = true;
                      console.log(value.first_name);
-                     $scope.user = value.first_name;
-                     $scope.picture_url = value.picture_url;
+                     $scope.user = value.full_name;
+                     $scope.avatar = value.avatar;
                      $scope.userRoute = "/#/profile/" + value.id;
                  }
             });

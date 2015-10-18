@@ -5,7 +5,7 @@ class BaseConfig(object):
     if os.environ['DEBUG'] is "True":
         DEBUG = True
         SECRET_KEY = "foobarbaz"
-        DB_NAME = "app"
+        DB_NAME = "projects"
         DB_USER = "mysql"
         DB_PASS = "mysql"
         MYSQL_ROOT_PASSWORD = "mysql"

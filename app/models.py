@@ -120,7 +120,7 @@ class Project(db.Model):
   description = db.Column(mysql.MEDIUMTEXT())
   owner_id = db.Column(db.Integer(), ForeignKey("users.id"))
   owner = db.relationship("User", backref="projects")
-  images = db.relationship("Image", backref="projects")
+  images = db.relationship("Image")
   skills = db.relationship("Skill", secondary="project_skills", backref="projects")
   comments = db.relationship("Comment", backref="projects")
 
@@ -155,6 +155,9 @@ class Image(db.Model):
       'url' : self.url,
       'image_name' : self.image_name
     }
+
+  def __str__(self):
+    return self.image_name
 
 class Comment(db.Model):
   __tablename__ = "comments"

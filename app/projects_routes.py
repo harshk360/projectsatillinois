@@ -79,7 +79,7 @@ def edit_project(id):
 
 @app.route('/project/add', methods = ['GET', 'POST'])
 def create_new_project():
-  MyForm = model_form(Project, base_class=Form, exclude_fk=True, db_session=db.session, field_args={
+  MyForm = model_form(Project, base_class=Form, db_session=db.session, field_args={
     'description': {'widget': TextArea()},
     'youtube_url': {'validators': [valid_youtube_link]},
     'github_url': {'validators': [valid_github_link]}
@@ -95,6 +95,7 @@ def create_new_project():
     project.github_url = form.github_url.data
     project.description = form.description.data
     project.skills = form.skills.data
+    db.session.add(project)
     db.session.commit()
     return redirect(url_for("index"))
   return render_template("create_project.html", form=form, url = "/project/add")
@@ -108,3 +109,16 @@ def valid_github_link(form, field):
   if form.github_url.data is not None and len(form.github_url.data) > 0:
     if not form.github_url.data.startswith("https://www.github.com"):
       raise ValidationError('Github link must start with https://www.github.com')
+
+@app.route('/project/add/<int:id>/image', methods = ['GET', 'POST'])
+def attach_image_to_project(id):
+  MyForm = model_form(Image, base_class=Form, exclude_fk = True, db_session=db.session)
+  image = Image(project_id = id)
+  form = MyForm(request.form, image)
+  if form.validate_on_submit():
+    image.image_name = form.image_name.data
+    image.url = form.url.data
+    db.session.add(image)
+    db.session.commit()
+    return redirect(url_for("index"))
+  return render_template("create_image.html", form=form, url = "/project/add/" + str(id) + "/image")

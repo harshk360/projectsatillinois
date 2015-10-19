@@ -123,3 +123,10 @@ def attach_image_to_project(id):
     db.session.commit()
     return redirect(url_for("index"))
   return render_template("create_image.html", form=form, url = "/project/add/" + str(id) + "/image")
+
+@app.route('/api/v1/delete/image/<int:id>')
+def delete_image(id):
+  image = db.session.query(Image).filter_by(id=id).first()
+  db.session.delete(image)
+  db.session.commit()
+  return jsonify(success="deleted")

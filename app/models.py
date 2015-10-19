@@ -152,6 +152,7 @@ class Image(db.Model):
 
   def serialize(self):
     return {
+      'id' : self.id,
       'url' : self.url,
       'image_name' : self.image_name
     }

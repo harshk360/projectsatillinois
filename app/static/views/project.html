@@ -2,6 +2,15 @@
     <img ng-src="{{project.images[0].url || defaultImage}}" class="center-block" style="height:300px;width:auto">
     <div ng-bind-html="updateProject" ng-show="setEditable" style="margin-top: 20px"></div>
     <div ng-bind-html="imageUploader" ng-show="setEditable"></div>
+    <div ng-show="setEditable && project.images && projects.images.length !== 0" style="display:block">
+        <h4>Uploaded Images</h4>
+        <ul>
+            <li ng-repeat="image in project.images">
+                {{image.image_name}} &nbsp;
+                <a ng-click="removeImage(image.id)">[Delete]</a>
+            </li>
+        </ul>
+    </div>
     <div style="text-align:center" ng-hide="setEditable">
         <h1>{{project.name}}</h1>
         <p>{{project.description}}</p>

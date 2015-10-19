@@ -112,7 +112,6 @@ angular.module('projects')
                     value.project.status = "Completed";
                 }
                 $scope.project = value.project;
-
                 $http
                     .get('api/user/current')
                     .success(function(currUser) {
@@ -137,6 +136,15 @@ angular.module('projects')
             .error(function(err) {
                 console.log(err);
             });
+
+        $scope.removeImage = function(index) {
+            $http
+                .get('/api/v1/delete/image/' + index)
+                .success(function(value) {
+                    console.log(value);
+                    location.reload();
+                })
+        };
     })
     .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.user = {};

@@ -7,11 +7,11 @@ angular
     .config(function ($routeProvider) {
         $routeProvider
             .when('/completed', {
-                templateUrl: 'static/views/completed.html',
+                templateUrl: 'static/views/home.html',
                 controller:'ProjectsCtrl'
             })
             .when('/inprogress', {
-                templateUrl: 'static/views/completed.html',
+                templateUrl: 'static/views/home.html',
                 controller: 'ProjectsCtrl'
             })
             .when('/profile/:profileId', {
@@ -31,8 +31,9 @@ angular
 
 angular.module('projects')
     .controller('NavCtrl', function($scope, $http, $location) {
-
         $scope.user = "";
+        $scope.loggedIn = false;
+
         $http
             .get('api/user/current')
             .success(function(value){
@@ -46,7 +47,6 @@ angular.module('projects')
                  }
             });
 
-        $scope.loggedIn = false;
         $scope.logIn = function() {
             var req = {
                 method: 'GET',
@@ -72,8 +72,6 @@ angular.module('projects')
                     $scope.loggedIn = false;
                 })
         };
-        
-
     })
     .controller('ProjectsCtrl', function ($scope, $http, $routeParams, $location, $sce, $route) {
 
@@ -93,16 +91,18 @@ angular.module('projects')
                    .get('api/v1/projects/IN_PROGRESS')
                    .success(function(value) {
                        $scope.projects = value.projects;
+                       debugger;
                    });
            }
         }();
 
-        $scope.go = function ( path ) {
-            $location.path( path );
+        $scope.go = function(path){
+            $location.path(path);
         };
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.project = {};
+        $scope.defaultImage = "http://academics.triton.edu/faculty/fheitzman/uiuc%20computer%20building%202.jpg";
 
         $http
             .get('api/v1/project/' + $routeParams.projectId)
@@ -112,8 +112,7 @@ angular.module('projects')
                 } else {
                     value.project.status = "Completed";
                 }
-                $scope.project = value;
-                console.log(value);
+                $scope.project = value.project;
 
                 $http
                     .get('api/user/current')
@@ -134,23 +133,28 @@ angular.module('projects')
     })
     .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.user = {};
+        $scope.setEditable = false;
         $http
             .get('api/user/' + $routeParams.profileId)
             .success(function(value) {
-                console.log(value);
+                $scope.user = value;
                 $http
                     .get('api/user/current')
                     .success(function(currUser) {
                         if (currUser.id == value.id) {
                             $scope.setEditable = true;
                         }
-                        $scope.user = value;
-                    });
-                $http
-                    .get('/user/update')
-                    .success(function(html){
-                        $scope.updateForm = $sce.trustAsHtml(html);
+                        $http
+                            .get('/user/update')
+                            .success(function(html){
+                                $scope.updateForm = $sce.trustAsHtml(html);
+                            })
+
                     })
+                    .error(function(err){
+                        console.log("No User Logged In");
+                    });
+
             })
             .error(function(err) {
                 console.log(err);

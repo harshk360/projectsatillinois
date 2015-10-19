@@ -1,12 +1,12 @@
 <div class="row" style="margin-top:55px">
-    <img ng-src="{{project.images[0].url}}" class="center-block" style="height:300px;width:auto">
+    <img ng-src="{{project.images[0].url || defaultImage}}" class="center-block" style="height:300px;width:auto">
     <div ng-bind-html="updateProject" ng-show="setEditable" style="margin-top: 20px"></div>
     <div style="text-align:center" ng-hide="setEditable">
-        <h1>{{project.project.name}}</h1>
-        <p>{{project.project.description}}</p>
-        <h3>Status: {{project.project.status}}</h3>
-        <h3>Owner: <a href="#/profile/{{project.project.owner.id}}">{{project.project.owner.full_name}}</a></h3>
-        <a style="color:black" href="{{project.project.github_url}}" ng-if="project.project.github_url"><i class="fa fa-4x fa-github-square"></i></a>
-        <a style="color:black" href="{{project.project.youtube_url}}" ng-if="project.project.youtube_url"><i class="fa fa-4x fa-youtube-square"></i></a>
+        <h1>{{project.name}}</h1>
+        <p>{{project.description}}</p>
+        <h3>Status: {{project.status}}</h3>
+        <h3>Owner: <a href="#/profile/{{project.project.owner.id}}">{{project.owner.full_name}}</a></h3>
+        <a style="color:black" href="{{project.github_url}}" ng-if="project.github_url"><i class="fa fa-4x fa-github-square"></i></a>
+        <a style="color:black" href="{{project.youtube_url}}" ng-if="project.youtube_url"><i class="fa fa-4x fa-youtube-square"></i></a>
     </div>
 </div>

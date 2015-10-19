@@ -2,8 +2,7 @@
 
 angular
     .module('projects', [
-        'ngRoute',
-        'ui.bootstrap'
+        'ngRoute'
     ])
     .config(function ($routeProvider) {
         $routeProvider

@@ -91,7 +91,6 @@ angular.module('projects')
                    .get('api/v1/projects/IN_PROGRESS')
                    .success(function(value) {
                        $scope.projects = value.projects;
-                       debugger;
                    });
            }
         }();
@@ -125,6 +124,14 @@ angular.module('projects')
                     .get('/project/edit/' + $routeParams.projectId)
                     .success(function(html){
                         $scope.updateProject = $sce.trustAsHtml(html);
+                    });
+                $http
+                    .get('/project/add/' + value.project.id +'/image')
+                    .success(function(html) {
+                        $scope.imageUploader = $sce.trustAsHtml(html);
+                    })
+                    .error(function(err){
+                        console.log(err);
                     });
             })
             .error(function(err) {

@@ -8,11 +8,11 @@ angular
         $routeProvider
             .when('/completed', {
                 templateUrl: 'static/views/completed.html',
-                controller:'CompletedCtrl'
+                controller:'ProjectsCtrl'
             })
             .when('/inprogress', {
-                templateUrl: 'static/views/inprogress.html',
-                controller: 'InProgressCtrl'
+                templateUrl: 'static/views/completed.html',
+                controller: 'ProjectsCtrl'
             })
             .when('/profile/:profileId', {
                 templateUrl: 'static/views/profile.html',
@@ -71,33 +71,27 @@ angular.module('projects')
         
 
     })
-    .controller('CompletedCtrl', function ($scope, $http, $routeParams, $location, $sce) {
+    .controller('ProjectsCtrl', function ($scope, $http, $routeParams, $location, $sce, $route) {
 
-        $http
-            .get('api/v1/projects/COMPLETED')
-            .success(function(value) {
-                $scope.projects = value.projects;
-            });
+        $scope.defaultImage = "http://academics.triton.edu/faculty/fheitzman/uiuc%20computer%20building%202.jpg";
 
-        $scope.go = function ( path ) {
-            $location.path( path );
-        };
-
-        $http
-            .get('/project/add')
-            .success(function(html){
-                $scope.createProjectForm = $sce.trustAsHtml(html);
-            })
-
-
-    })
-    .controller('InProgressCtrl', function ($scope, $http, $routeParams, $location) {
-
-        $http
-            .get('api/v1/projects/IN_PROGRESS')
-            .success(function(value) {
-                $scope.projects = value.projects;
-            });
+        $scope.initialLoad = function() {
+           if ($route.current.$$route.originalPath === '/completed') {
+               $scope.completed = true;
+               $http
+                   .get('api/v1/projects/COMPLETED')
+                   .success(function(value) {
+                       $scope.projects = value.projects;
+                   });
+           } else {
+               $scope.completed = false;
+               $http
+                   .get('api/v1/projects/IN_PROGRESS')
+                   .success(function(value) {
+                       $scope.projects = value.projects;
+                   });
+           }
+        }();
 
         $scope.go = function ( path ) {
             $location.path( path );
@@ -108,6 +102,7 @@ angular.module('projects')
             .success(function(html){
                 $scope.createProjectForm = $sce.trustAsHtml(html);
             })
+
 
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce) {
@@ -135,7 +130,7 @@ angular.module('projects')
                     .get('/project/edit/' + $routeParams.projectId)
                     .success(function(html){
                         $scope.updateProject = $sce.trustAsHtml(html);
-                    })
+                    });
             })
             .error(function(err) {
                 console.log(err);

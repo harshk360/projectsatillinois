@@ -22,6 +22,10 @@ angular
                 templateUrl: 'static/views/project.html',
                 controller: 'ProjectCtrl'
             })
+            .when('/createproject', {
+                templateUrl: 'static/views/addProject.html',
+                controller: 'AddProjectCtrl'
+            })
             .otherwise('/completed');
     });
 
@@ -96,14 +100,6 @@ angular.module('projects')
         $scope.go = function ( path ) {
             $location.path( path );
         };
-
-        $http
-            .get('/project/add')
-            .success(function(html){
-                $scope.createProjectForm = $sce.trustAsHtml(html);
-            })
-
-
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.project = {};
@@ -158,5 +154,13 @@ angular.module('projects')
             })
             .error(function(err) {
                 console.log(err);
+            });
+    })
+    .controller('AddProjectCtrl', function($scope, $http, $sce) {
+        $http
+            .get('/project/add')
+            .success(function(html){
+                $scope.createProjectForm = $sce.trustAsHtml(html);
+                console.log(html);
             });
     });

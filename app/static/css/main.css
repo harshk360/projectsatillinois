@@ -345,3 +345,23 @@ overflow: hidden;
 .buttons {
   padding-top: 25px;
 }
+
+.project-header {
+  background-color: white;
+  color: #EC443F;
+  font-family: 'Gotham';
+  text-align: center;
+  display: block;
+  padding: 15px;
+}
+
+.project-name {
+  padding-top: 25px;
+  font-size: 4em;
+}
+
+.project-description {
+  padding-top: 25px;
+  font-size: 1.5em;
+  color: rgb(51, 51, 51);
+}

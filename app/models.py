@@ -110,7 +110,7 @@ class Visit(db.Model):
 
 class Project(db.Model):
   __tablename__ = "projects"
-  enum = Enum('IN_PROGRESS','COMPLETED', 'DELETED')
+  enum = Enum('In Progress','Completed', 'Deleted')
   id = db.Column(db.Integer, primary_key=True)
   name = db.Column(db.String(255), nullable=False)
   status = db.Column(enum, nullable=False)

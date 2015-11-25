@@ -16,7 +16,7 @@ from copy import deepcopy
 def get_projects(page):
   number_per_page = 8
   start_index = ((page - 1) * number_per_page)
-  projects = Project.query.filter(Project.status!="DELETED").order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
+  projects = Project.query.filter(Project.status != "Deleted").order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
   end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
   return jsonify(projects=[project.serialize() for project in projects], page = page, number_of_pages = int(end_page))
 
@@ -24,7 +24,12 @@ def get_projects(page):
 @app.route('/api/v1/projects/<string:status>', defaults={'page': 1})
 @app.route('/api/v1/projects/page/<int:page>/<string:status>')
 def get_projects_by_status(page, status):
-  status = status.upper()
+  if "in" in status.lower() and "progress" in status.lower():
+    status = "In Progress"
+  if "delete" in status.lower():
+    status = "Deleted"
+  if "complete" in status.lower():
+    status = "Completed"
   number_per_page = 8
   start_index = ((page - 1) * number_per_page)
   projects = Project.query.filter(Project.status==status).order_by(asc(Project.id)).offset(start_index).limit(number_per_page)

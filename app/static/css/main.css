@@ -365,3 +365,18 @@ overflow: hidden;
   font-size: 1.5em;
   color: rgb(51, 51, 51);
 }
+
+.project-details {
+  margin: 55px 25px;
+}
+
+.carousel img{
+  width: auto;
+  height: 225px;
+  max-height: 225px;
+}
+
+.carousel-inner img {
+  display: block;
+  margin: auto;
+}

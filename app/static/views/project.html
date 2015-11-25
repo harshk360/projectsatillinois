@@ -1,42 +1,47 @@
 <div class="project-header">
     <span class="project-name">{{project.name}}</span>
     <br>
-    <span class="project-description">{{project.description}}</span>
+    <span class="project-description">{{project.subtitle}}</span>
 </div>
 
-<!-- HTML for if Owner -->
-<div class="row" ng-show="setEditable">
-    <div ng-bind-html="updateProject" ng-show="setEditable" style="margin-top: 20px"></div>
-    <div ng-bind-html="imageUploader" ng-show="setEditable"></div>
-    <div ng-show="setEditable && project.images && projects.images.length !== 0" style="display:block">
-        <h4>Uploaded Images</h4>
-        <ul>
-            <li ng-repeat="image in project.images">
-                {{image.image_name}} &nbsp;
-                <a ng-click="removeImage(image.id)">[Delete]</a>
-            </li>
-        </ul>
+<div class = "container">
+    <!-- HTML for if Owner -->
+    <div class="row" ng-show="setEditable">
+        <div ng-bind-html="updateProject" ng-show="setEditable" style="margin-top: 20px"></div>
+        <div ng-bind-html="imageUploader" ng-show="setEditable"></div>
+        <div ng-show="setEditable && project.images && projects.images.length !== 0" style="display:block">
+            <h4>Uploaded Images</h4>
+            <ul>
+                <li ng-repeat="image in project.images">
+                    {{image.image_name}} &nbsp;
+                    <a ng-click="removeImage(image.id)">[Delete]</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
-
-<div class="row project-details" ng-hide="setEditable">
-    <div class="col-sm-9">
-        <div id="image-carousel" class="carousel slide" data-ride="carousel">
-          <ol class="carousel-indicators">
-            <li data-target="#image-carousel" ng-repeat="image in project.images" data-slide-to="{{$index}}" ng-class="{active:$first}"></li>
-        </ol>
+    <div class="row project-details" ng-hide="setEditable">
+        <div class="col-sm-9">
+            <div id="image-carousel" class="carousel slide" data-ride="carousel">
+              <ol class="carousel-indicators">
+                <li data-target="#image-carousel" ng-repeat="image in project.images" data-slide-to="{{$index}}" ng-class="{active:$first}"></li>
+            </ol>
             <div class="carousel-inner" role="listbox">
                 <div class="item"  ng-class="{active:$first}" ng-repeat="image in project.images">
                   <img ng-src="{{image.url}}" alt="...">
                   <div class="carousel-caption">{{image.image_name}}</div>
               </div>
           </div>
-      </div>
+        </div>
+            <h2>Description</h2>
+            {{project.description}}
+            <h2>Skills</h2>
+             <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="s in project.skills">{{s.name}}</span></div>
+        </div>
+        <div class="col-sm-3" style="text-align:center">
+            <h3>Status: {{project.status}}</h3>
+            <h3>Owner: <a href="#/profile/{{project.project.owner.id}}">{{project.owner.full_name}}</a></h3>
+            <a style="color:black" href="{{project.github_url}}" ng-if="project.github_url"><i class="fa fa-4x fa-github-square"></i></a>
+            <a style="color:black" href="{{project.youtube_url}}" ng-if="project.youtube_url"><i class="fa fa-4x fa-youtube-square"></i></a>
+        </div>
     </div>
-    <div class="col-sm-3" style="text-align:center">
-    <h3>Status: {{project.status}}</h3>
-    <h3>Owner: <a href="#/profile/{{project.project.owner.id}}">{{project.owner.full_name}}</a></h3>
-    <a style="color:black" href="{{project.github_url}}" ng-if="project.github_url"><i class="fa fa-4x fa-github-square"></i></a>
-    <a style="color:black" href="{{project.youtube_url}}" ng-if="project.youtube_url"><i class="fa fa-4x fa-youtube-square"></i></a>
-</div>
 </div>

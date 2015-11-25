@@ -117,6 +117,7 @@ class Project(db.Model):
   cost = db.Column(db.DECIMAL(6, 2))
   youtube_url = db.Column(db.String(255))
   github_url = db.Column(db.String(255))
+  subtitle = db.Column(db.String(255))
   description = db.Column(mysql.MEDIUMTEXT())
   owner_id = db.Column(db.Integer(), ForeignKey("users.id"))
   owner = db.relationship("User", backref="projects")
@@ -135,6 +136,7 @@ class Project(db.Model):
       # 'cost' : float(self.cost),
       'youtube_url' : self.youtube_url,
       'github_url' : self.github_url,
+      'subtitle' : self.subtitle,
       'description' : self.description,
       'owner' : self.owner.serialize(),
       'images' : [image.serialize() for image in self.images],

@@ -184,7 +184,11 @@ class Skill(db.Model):
   name = db.Column(db.String(255), nullable=False)
   type = db.Column(db.String(255), nullable=False)
 
-  def __init__(self, name, type):
+  #Required for Admin
+  def __init__(self):
+    return
+
+  def __init__(self, name, typeName):
     self.name = name
     self.type = type
 

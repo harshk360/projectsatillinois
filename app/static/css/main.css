@@ -306,3 +306,29 @@ overflow: hidden;
     border-color: white;
     color:white;
 }
+
+.hero {
+  background-image: url("/static/img/hero_blur.jpg");
+  background-size: cover;
+  background-position: bottom center;
+  color: #FFFFFF;
+  text-align: center;
+  padding: 12rem 0;
+  height: 60%;
+}
+
+.content {
+  margin: 0 auto;
+  max-width: 90rem;
+  width: 90%;
+  position: relative;
+  font-family: 'Gotham' !important;
+}
+
+.content h1 {
+  color: white;
+}
+
+.buttons {
+  padding-top: 25px;
+}

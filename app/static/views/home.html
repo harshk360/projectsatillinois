@@ -4,13 +4,9 @@
             <button type="button" class="btn btn-default" ng-click="go('/completed')" ng-class="{active: completed}">Completed</button>
             <button type="button" class="btn btn-default" ng-click="go('/inprogress')" ng-class="{active: !completed}">In Progress</button>
         </div>
-
-        <button type="button" class="btn update-button" ng-click="go('/createproject')" style="float:right">
-            Create Project
-        </button>
     </div>
     <div class="row" style="margin-top:20px">
-        <div class="col-md-4 col-sm-6 text-center" ng-repeat="p in projects">
+        <div class="col-md-4 col-sm-6 col-xs-6 text-center" ng-repeat="p in projects">
             <div class="panel-body non-semantic-protector" style="background: url('{{p.images[0].url || defaultImage}}') no-repeat; background-size: cover; background-position: center; height: 300px">
             </div>
             <div class = "panel panel-default">

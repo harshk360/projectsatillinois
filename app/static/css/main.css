@@ -9,9 +9,16 @@ html, body {
     background-color: #F0F0F0;
 }
 
-h1, h2 {
-    color: #525252;
+h1 {
+    color: #464545;
     font-size: 3em;
+    font-family: 'Gotham'
+}
+
+h2 {
+  color: #464545;
+  font-size: 2em;
+  font-family: 'Gotham'
 }
 
 p {
@@ -307,6 +314,12 @@ overflow: hidden;
     color:white;
 }
 
+.update-button.active {
+  background-color: #fff;
+  color: #EC443F;
+  border-color: white;
+}
+
 .hero {
   background-image: url("/static/img/hero_blur.jpg");
   background-size: cover;
@@ -314,12 +327,12 @@ overflow: hidden;
   color: #FFFFFF;
   text-align: center;
   padding: 12rem 0;
-  height: 60%;
+  height: 50%;
 }
 
 .content {
   margin: 0 auto;
-  max-width: 90rem;
+  max-width: 80rem;
   width: 90%;
   position: relative;
   font-family: 'Gotham' !important;

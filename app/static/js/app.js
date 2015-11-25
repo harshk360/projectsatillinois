@@ -83,7 +83,7 @@ angular.module('projects')
             });
         });
 
-        $scope.defaultImage = "https://res.cloudinary.com/roadtrippers/image/upload/c_fill,h_316,w_520/v1392141797/thomas-m-siebel-center-for-computer-science-558226.jpg";
+        $scope.defaultImage = "/static/img/hero_blur.jpg";
 
         $scope.initialLoad = function() {
            if ($route.current.$$route.originalPath === '/completed') {
@@ -109,8 +109,8 @@ angular.module('projects')
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.project = {};
-        $scope.defaultImage = "http://academics.triton.edu/faculty/fheitzman/uiuc%20computer%20building%202.jpg";
-
+        $scope.defaultImage = "/static/img/hero_blur.jpg";
+  
         $http
             .get('api/v1/project/' + $routeParams.projectId)
             .success(function(value) {

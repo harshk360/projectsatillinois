@@ -75,7 +75,15 @@ angular.module('projects')
     })
     .controller('ProjectsCtrl', function ($scope, $http, $routeParams, $location, $sce, $route) {
 
-        $scope.defaultImage = "http://academics.triton.edu/faculty/fheitzman/uiuc%20computer%20building%202.jpg";
+        $( document ).ready(function() {
+            $("#view-project").click(function() {
+                $('html, body').animate({
+                    scrollTop: $(".index").offset().top
+                }, 1000);
+            });
+        });
+
+        $scope.defaultImage = "https://res.cloudinary.com/roadtrippers/image/upload/c_fill,h_316,w_520/v1392141797/thomas-m-siebel-center-for-computer-science-558226.jpg";
 
         $scope.initialLoad = function() {
            if ($route.current.$$route.originalPath === '/completed') {

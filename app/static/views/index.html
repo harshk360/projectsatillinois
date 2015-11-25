@@ -35,14 +35,12 @@
       js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3&appId=1465734760385892";
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));</script>
-
 </head>
 <body ng-app = "projects">
     <nav ng-controller="NavCtrl" style="margin-bottom:0px">
         <div class = "container-fluid">
             <div class = "navbar-header">
                 <a class = "navbar-brand" href = "#/home" rel="home">
-                    <!-- <img id = "logo" src = "static/img/logo.png"/> -->
                 </a>
                 <p class = "navbar-text">
                   <a class = "navbar-name" href="#/home">Projects @ ILLINOIS</a>
@@ -68,15 +66,6 @@
             </div>
         </div>
     </nav>
-    <div class="hero">
-      <div class="content">
-        <h1>Welcome to Projects @ ILLINOIS</h1>
-        <div class="buttons">
-          <button type="button" class="btn update-button" ng-click="go('/createproject')">Create Project</button>
-          <button type="button" class="btn update-button" id="view-project">View Projects</button>
-        </div>
-      </div>
-    </div>
     <ng-view></ng-view>
 </body>
 </html>

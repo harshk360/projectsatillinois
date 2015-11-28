@@ -120,7 +120,7 @@ def valid_youtube_link(form, field):
 
 def valid_github_link(form, field):
   if form.github_url.data is not None and len(form.github_url.data) > 0:
-    if not form.github_url.data.startswith("https://www.github.com"):
+    if not form.github_url.data.startswith("https://github.com"):
       raise ValidationError('Github link must start with https://www.github.com')
 
 @app.route('/project/add/<int:id>/image', methods = ['GET', 'POST'])

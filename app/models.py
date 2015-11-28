@@ -123,6 +123,7 @@ class Project(db.Model):
   owner = db.relationship("User", backref="projects")
   images = db.relationship("Image")
   skills = db.relationship("Skill", secondary="project_skills", backref="projects")
+  team_members = db.relationship("User", secondary="team_members", backref="users")
   comments = db.relationship("Comment", backref="projects")
 
   def __str__(self):
@@ -141,7 +142,8 @@ class Project(db.Model):
       'owner' : self.owner.serialize(),
       'images' : [image.serialize() for image in self.images],
       'skills' : [skill.serialize() for skill in self.skills],
-      'comments' : [comment.serialize() for comment in self.comments]
+      'comments' : [comment.serialize() for comment in self.comments],
+      'team_members' : [member.serialize() for member in self.team_members]
     }
 
 class Image(db.Model):
@@ -202,3 +204,9 @@ class Skill(db.Model):
 
   def __str__(self):
     return self.name 
+
+class Team_Member(db.Model):
+  __tablename__ = "team_members"
+  id = db.Column(db.Integer, primary_key=True)
+  project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=False)
+  user_id = db.Column(db.Integer(), ForeignKey("users.id"), nullable=False)

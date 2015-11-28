@@ -10,9 +10,10 @@
 <div class = "container">
     <!-- HTML for if Owner -->
     <div class="row" ng-show="setEditable">
-        <div ng-bind-html="updateProject" ng-show="setEditable" style="margin-top: 20px"></div>
-        <div ng-bind-html="imageUploader" ng-show="setEditable"></div>
-        <div ng-show="setEditable && project.images && projects.images.length !== 0" style="display:block">
+        <div ng-bind-html="updateProject" style="margin-top: 20px"></div>
+        <div ng-bind-html="imageUploader"></div>
+        <div ng-bind-html="teamMemberUploader"></div>
+        <div ng-show="project.images && project.images.length !== 0" style="display:block">
             <h4>Uploaded Images</h4>
             <ul>
                 <li ng-repeat="image in project.images">
@@ -21,7 +22,17 @@
                 </li>
             </ul>
         </div>
+        <div ng-show="project.team_members && project.team_members.length !== 0" style="display:block">
+            <h4>Team Members</h4>
+            <ul>
+                <li ng-repeat="team_member in project.team_members">
+                    {{team_member.full_name}} &nbsp;
+                    <a ng-click="removeTeamMember(project.id, team_member.id)">[Delete]</a>
+                </li>
+            </ul>
+        </div>
     </div>
+    <!-- HTML if Viewing -->
     <div class="row project-details" ng-hide="setEditable">
         <div class="col-sm-9">
             <div id="image-carousel" class="carousel slide" data-ride="carousel">
@@ -41,13 +52,24 @@
              <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="s in project.skills">{{s.name}}</span></div>
              <h2 ng-if="project.youtube_url">Watch It</h2>
              <iframe ng-if="project.youtube_url" ng-src="{{getYoutubeEmbed(project.youtube_url)}}" height=385 width=640></iframe>
+             <h2 ng-if="project.github_url">Play with It</h2>
+             <a ng-if="project.github_url" style="color:black" href="{{project.github_url}}" ng-if="p.github_url"><i class="fa fa-2x fa-github-square"></i></a>
 
         </div>
         <div class="col-sm-3" style="text-align:center">
-            <h3>Status: {{project.status}}</h3>
-            <h3>Owner: <a href="#/profile/{{project.project.owner.id}}">{{project.owner.full_name}}</a></h3>
-            <a style="color:black" href="{{project.github_url}}" ng-if="project.github_url"><i class="fa fa-4x fa-github-square"></i></a>
-            <a style="color:black" href="{{project.youtube_url}}" ng-if="project.youtube_url"><i class="fa fa-4x fa-youtube-square"></i></a>
+            <h2>Status:</h2><h4>{{project.status}}</h4>
+            <h2>Owner:</h2>
+            <img class="img-responsive img-circle" alt="{{project.owner.full_name}}" style="max-width:50%; margin: auto; display: block;" ng-src="{{project.owner.avatar}}"/>
+            <h4><a href="#/profile/{{project.owner.id}}">{{project.owner.full_name}}</a></h4>
+            <p ng-if="project.owner.academic_major" style="margin:0px">{{project.owner.academic_major}}</p>
+            <p ng-if="project.owner.graduation_month">{{project.owner.graduation_month}} {{project.owner.graduation_year}}</p>
+            <h2 ng-if="project.team">Team Members</h2>
+            <div class="team-member" ng-repeat="member in project.team_members">
+                <img class="img-responsive img-circle" alt="{{member.full_name}}" style="max-width:50%; margin: auto; display: block;" ng-src="{{project.owner.avatar}}"/>
+                <h4><a href="#/profile/{{member.id}}">{{member.full_name}}</a></h4>
+                <p ng-if="member.academic_major" style="margin:0px">{{member.academic_major}}</p>
+                <p ng-if="member.graduation_month">{{member.graduation_month}} {{member.graduation_year}}</p>
+            </div>
         </div>
     </div>
 </div>

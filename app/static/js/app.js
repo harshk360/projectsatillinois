@@ -146,6 +146,14 @@ angular.module('projects')
                     .error(function(err){
                         console.log(err);
                     });
+                $http
+                    .get('/project/add/' + value.project.id +'/team_member')
+                .success(function(html) {
+                        $scope.teamMemberUploader = $sce.trustAsHtml(html);
+                        $timeout(function() {
+                            $scope.setupTeamMemberForm();
+                        });
+                    })
             })
             .error(function(err) {
                 console.log(err);
@@ -197,6 +205,28 @@ angular.module('projects')
                 });
             });
         }
+        $scope.setupTeamMemberForm = function () {
+            var form = $('#team-member-form');
+            $("#team-member-submit").click(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    statusCode: {
+                        200: function (response) {
+                            form.replaceWith(response);
+                            $scope.setupTeamMemberForm();
+                        },
+                        201: function (response) {
+                            $timeout(function(){ 
+                                location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+        }
 
         $scope.toggleEditable = function () {
             $scope.setEditable = !$scope.setEditable;
@@ -205,6 +235,15 @@ angular.module('projects')
         $scope.getYoutubeEmbed = function(id) {
             return $sce.trustAsResourceUrl("https://www.youtube.com/embed/" + id.substr(-11));
         };
+
+        $scope.removeTeamMember = function(project_id, user_id) {
+            $http
+                .get('/api/v1/delete/team_member/' + project_id + "/" + user_id)
+                .success(function(value) {
+                    location.reload();
+                })
+        };
+
     })
     .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.user = {};

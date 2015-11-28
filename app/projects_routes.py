@@ -1,13 +1,14 @@
 from app_and_db import app, db
 from flask import abort, jsonify, redirect, render_template, request, session, url_for
 from math import ceil
-from models import Project, Image, Comment
+from models import User, Project, Image, Comment, Team_Member
 from sqlalchemy import asc
 from sqlalchemy.sql import func
 from flask.ext.wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
+from wtforms.fields.html5 import EmailField
 from wtforms.widgets import TextArea, HiddenInput
-from wtforms.validators import StopValidation, Required, ValidationError, InputRequired, URL
+from wtforms.validators import StopValidation, Required, ValidationError, InputRequired, URL, Email
 from copy import deepcopy
 
 import re
@@ -137,7 +138,7 @@ def attach_image_to_project(id):
     image.url = form.url.data
     db.session.add(image)
     db.session.commit()
-    return "/success", 201
+    return "success", 201
   return render_template("create_image.html", form=form, url = "/project/add/" + str(id) + "/image")
 
 def valid_image_link(form, field):
@@ -154,3 +155,35 @@ def delete_image(id):
   db.session.delete(image)
   db.session.commit()
   return jsonify(success="deleted")
+
+@app.route('/project/add/<int:id>/team_member', methods = ['GET', 'POST'])
+def attach_team_member_to_project(id):
+  form = EmailForm()
+  if form.validate_on_submit():
+    user = db.session.query(User).filter_by(email=form.email.data).first()
+    team_member = Team_Member()
+    team_member.project_id = id
+    team_member.user_id = user.id
+    db.session.add(team_member)
+    db.session.commit()
+    return "success", 201
+  return render_template("create_team_member.html", form=form, url = "/project/add/" + str(id) + "/team_member")
+
+@app.route('/api/v1/delete/team_member/<int:project_id>/<int:user_id>')
+def delete_team_member(project_id, user_id):
+  team_member = db.session.query(Team_Member).filter_by(project_id=project_id, user_id=user_id).first()
+  db.session.delete(team_member)
+  db.session.commit()
+  return jsonify(success="deleted")
+
+def valid_user(form, field):
+  email = form.email.data
+  try:
+    user = db.session.query(User).filter_by(email=email).first()
+    if user is None:
+      raise ValidationError("Invalid User")
+  except Exception as e:
+    raise ValidationError("Invalid User")
+
+class EmailForm(Form):
+    email = EmailField('Email address', [InputRequired(), Email(), valid_user])

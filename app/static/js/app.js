@@ -126,6 +126,11 @@ angular.module('projects')
                             $scope.setEditable = true;
                             $scope.isOwner = true;
                         }
+                        if (value.error){
+                            $scope.loggedIn = false;
+                        } else {
+                            $scope.loggedIn = true;
+                        }
                     });
                 $http
                     .get('/project/edit/' + $routeParams.projectId)
@@ -152,6 +157,14 @@ angular.module('projects')
                         $scope.teamMemberUploader = $sce.trustAsHtml(html);
                         $timeout(function() {
                             $scope.setupTeamMemberForm();
+                        });
+                    })
+                $http
+                    .get('/project/add/' + value.project.id +'/comment')
+                .success(function(html) {
+                        $scope.commentUploader = $sce.trustAsHtml(html);
+                        $timeout(function() {
+                            $scope.setupCommentForm();
                         });
                     })
             })
@@ -228,6 +241,28 @@ angular.module('projects')
             });
         }
 
+        $scope.setupCommentForm = function () {
+            var form = $('#comment-form');
+            $("#comment-submit").click(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    statusCode: {
+                        200: function (response) {
+                            form.replaceWith(response);
+                            $scope.setupCommentForm();
+                        },
+                        201: function (response) {
+                            $timeout(function(){ 
+                                location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+        }
         $scope.toggleEditable = function () {
             $scope.setEditable = !$scope.setEditable;
         }

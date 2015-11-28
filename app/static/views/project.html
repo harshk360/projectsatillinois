@@ -72,4 +72,31 @@
             </div>
         </div>
     </div>
+    <style>
+        blockquote{
+          margin: 10px 0px 10px 0px;
+          padding: 0px 0px 0px 25px;
+          border-left: 5px solid rgb(51, 51, 51);
+          font-size: 14px;
+        }
+        blockquote > footer:before{
+          content: initial;
+        }
+    </style>
+    <div class="comments" ng-hide="setEditable" style="background-color: white; border-radius: 15px; padding: 15px;">
+        <h2>Comments</h2>
+        <div ng-show="loggedIn" ng-bind-html="commentUploader" class="comment-form">
+        </div>
+        <div ng-hide="loggedIn" class = "logged-out" style="margin: 25px; padding: 15px 0px; text-align: center; background-color:#EC443F">
+            <p style="padding: 0px; margin: 0px; color: white">Join the conversation. <a href="/facebook_login">Login with Facebook</a></p>
+        </div>
+        <blockquote style = "color:rgb(51, 51, 51); font-size: 16px;"class="comment" ng-repeat="comment in project.comments">
+            {{comment.comment}}
+            <footer>
+                <img class="img-responsive img-circle" alt="{{comment.user.full_name}}" style="max-width:25px; display: inline;" ng-src="{{comment.user.avatar}}"/>
+                <a href="#/profile/{{comment.user.id}}">{{comment.user.full_name}}</a>
+                <br>{{comment.timestamp|date:"MM/dd/yyyy 'at' h:mma"}}
+            </footer>
+        </blockquote>
+    </div>
 </div>

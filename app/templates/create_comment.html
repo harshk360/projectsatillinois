@@ -1,0 +1,7 @@
+{% import 'macros.html' as macros %}
+
+<form method="POST" id="comment-form" action="{{url}}" style="margin-top:30px">
+  {{ form.hidden_tag() }}
+  {{ form.comment(class='form-control') }}
+  <input type="submit" value="Add Comment" class="btn update-button" id="comment-submit">
+</form>

@@ -6,6 +6,7 @@ from sqlalchemy import asc
 from sqlalchemy.sql import func
 from flask.ext.wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
+from wtforms.fields import TextAreaField
 from wtforms.fields.html5 import EmailField
 from wtforms.widgets import TextArea, HiddenInput
 from wtforms.validators import StopValidation, Required, ValidationError, InputRequired, URL, Email
@@ -44,13 +45,10 @@ def get_projects_by_status(page, status):
 def get_project_by_id(id):
   project = Project.query.filter_by(id=id).first()
   images = Image.query.filter_by(project_id=id).all()
-  comments = Comment.query.filter_by(project_id=id).order_by(asc(Comment.timestamp)).all()
-  return jsonify(project = project.serialize(), images = [image.serialize() for image in images], comments = [comment.serialize() for comment in comments])
+  return jsonify(project = project.serialize(), images = [image.serialize() for image in images])
 
 @app.route('/api/v1/project/<int:id>/<string:status>')
 def update_project_status_by_id(id, status):
-  if id != session['id']:
-    return jsonify(error="User does not own project"), 403
   project = Project.query.filter_by(id=id).first()
   status = status.upper()
   if status not in Project.status.property.columns[0].type.enums:
@@ -187,3 +185,19 @@ def valid_user(form, field):
 
 class EmailForm(Form):
     email = EmailField('Email address', [InputRequired(), Email(), valid_user])
+
+@app.route('/project/add/<int:id>/comment', methods = ['GET', 'POST'])
+def attach_comment_to_project(id):
+  form = CommentForm()
+  if form.validate_on_submit():
+    comment = Comment()
+    comment.user_id = session['id']
+    comment.project_id = id
+    comment.comment = form.comment.data
+    db.session.add(comment)
+    db.session.commit()
+    return "success", 201
+  return render_template("create_comment.html", form=form, url = "/project/add/" + str(id) + "/comment")
+
+class CommentForm(Form):
+    comment = TextAreaField('Comment', [InputRequired()])

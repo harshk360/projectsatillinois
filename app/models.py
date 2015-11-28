@@ -176,7 +176,8 @@ class Comment(db.Model):
   def serialize(self):
     return {
       'comment' : self.comment,
-      'user' : self.user.serialize()
+      'user' : self.user.serialize(),
+      'timestamp' : self.timestamp.isoformat()
     }
 
   def __str__(self):

@@ -75,7 +75,7 @@ angular.module('projects')
     })
     .controller('ProjectsCtrl', function ($scope, $http, $routeParams, $location, $sce, $route) {
 
-        $( document ).ready(function() {
+        $(document).ready(function() {
             $("#view-project").click(function() {
                 $('html, body').animate({
                     scrollTop: $(".index").offset().top
@@ -107,10 +107,9 @@ angular.module('projects')
             $location.path(path);
         };
     })
-    .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce) {
+    .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout) {
         $scope.project = {};
         $scope.defaultImage = "/static/img/hero_blur.jpg";
-  
         $http
             .get('api/v1/project/' + $routeParams.projectId)
             .success(function(value) {
@@ -131,11 +130,17 @@ angular.module('projects')
                     .get('/project/edit/' + $routeParams.projectId)
                     .success(function(html){
                         $scope.updateProject = $sce.trustAsHtml(html);
+                        $timeout(function() {
+                            $scope.setupForm();
+                        });
                     });
                 $http
                     .get('/project/add/' + value.project.id +'/image')
                     .success(function(html) {
                         $scope.imageUploader = $sce.trustAsHtml(html);
+                        $timeout(function() {
+                            $scope.setupImageForm();
+                        });
                     })
                     .error(function(err){
                         console.log(err);
@@ -144,7 +149,6 @@ angular.module('projects')
             .error(function(err) {
                 console.log(err);
             });
-
         $scope.removeImage = function(index) {
             $http
                 .get('/api/v1/delete/image/' + index)
@@ -153,6 +157,45 @@ angular.module('projects')
                     location.reload();
                 })
         };
+        $scope.setupForm = function () {
+            $('#my-select').multiSelect();
+            var form = $('#project_form');
+            $("#submit_project").click(function(event) {
+                event.preventDefault();
+                $.ajax( {
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(response) {
+                        form.replaceWith(response);
+                        console.log(response);
+                        $scope.setupForm();
+                    }
+                });
+            });
+        };
+        $scope.setupImageForm = function () {
+            var form = $('#image_form');
+            $("#image-submit").click(function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    statusCode: {
+                        200: function (response) {
+                            form.replaceWith(response);
+                            $scope.setupImageForm();
+                        },
+                        201: function (response) {
+                            $timeout(function(){ 
+                                location.reload();
+                            });
+                        }
+                    }
+                });
+            });
+        }
     })
     .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.user = {};
@@ -183,11 +226,36 @@ angular.module('projects')
                 console.log(err);
             });
     })
-    .controller('AddProjectCtrl', function($scope, $http, $sce) {
+    .controller('AddProjectCtrl', function($scope, $http, $sce, $timeout, $location) {
         $http
             .get('/project/add')
             .success(function(html){
                 $scope.createProjectForm = $sce.trustAsHtml(html);
-                console.log(html);
+                $timeout(function() {
+                    $scope.setupForm();
+                });
             });
+        $scope.setupForm = function () {
+            $('#my-select').multiSelect();
+            var form = $('#project_form');
+            $("#submit_project").click(function(event) {
+                event.preventDefault();
+                $.ajax( {
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    statusCode: {
+                        200: function (response) {
+                            form.replaceWith(response);
+                            $scope.setupForm();
+                        },
+                        201: function (response) {
+                            $timeout(function(){ 
+                                $location.path(response);
+                            });
+                        }
+                    }
+                });
+            });
+        };
     });

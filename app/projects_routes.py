@@ -7,7 +7,7 @@ from sqlalchemy.sql import func
 from flask.ext.wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
 from wtforms.widgets import TextArea, HiddenInput
-from wtforms.validators import StopValidation, Required, ValidationError
+from wtforms.validators import StopValidation, Required, ValidationError, InputRequired, URL
 from copy import deepcopy
 
 @app.route('/api/v1/project', defaults={'page': 1})
@@ -62,6 +62,7 @@ def update_project_status_by_id(id, status):
 @app.route('/project/edit/<int:id>', methods = ['GET', 'POST'])
 def edit_project(id):
   MyForm = model_form(Project, base_class=Form, exclude_fk=True, db_session=db.session, field_args={
+    'name' : {'validators' : [InputRequired()]},
     'description': {'widget': TextArea()},
     'youtube_url': {'validators': [valid_youtube_link]},
     'github_url': {'validators': [valid_github_link]}
@@ -71,40 +72,38 @@ def edit_project(id):
     abort(404) 
   form = MyForm(request.form, project)
   if form.validate_on_submit():
-    project.name = form.name.data
-    project.status = form.status.data
-    project.cost = form.cost.data
-    project.youtube_url = form.youtube_url.data
-    project.github_url = form.github_url.data
-    project.description = form.description.data
-    project.skills = form.skills.data
-    db.session.add(project)
-    db.session.commit()
-    return redirect(url_for("index"))
+    update_fields(project, form)
+    return render_template("create_project.html", form=form, success=True, url = "/project/edit/" + str(id))
   return render_template("create_project.html", form=form, url = "/project/edit/" + str(id))
 
 @app.route('/project/add', methods = ['GET', 'POST'])
 def create_new_project():
   MyForm = model_form(Project, base_class=Form, db_session=db.session, field_args={
+    'name' : {'validators' : [InputRequired()]},
     'description': {'widget': TextArea()},
     'youtube_url': {'validators': [valid_youtube_link]},
-    'github_url': {'validators': [valid_github_link]}
+    'github_url': {'validators': [valid_github_link]},
+    'cost' : {'description' : "You can provide a reward for helping with a project"}
   })
   project = Project()
   form = MyForm(request.form, project)
   if form.validate_on_submit():
     project.owner_id = session['id']
-    project.name = form.name.data
-    project.status = form.status.data
-    project.cost = form.cost.data
-    project.youtube_url = form.youtube_url.data
-    project.github_url = form.github_url.data
-    project.description = form.description.data
-    project.skills = form.skills.data
-    db.session.add(project)
-    db.session.commit()
-    return redirect(url_for("index"))
+    update_fields(project, form)
+    return "/project/" + str(project.id), 201
   return render_template("create_project.html", form=form, url = "/project/add")
+
+def update_fields(project, form):
+  project.name = form.name.data
+  project.subtitle = form.subtitle.data
+  project.status = form.status.data
+  project.cost = form.cost.data
+  project.youtube_url = form.youtube_url.data
+  project.github_url = form.github_url.data
+  project.description = form.description.data
+  project.skills = form.skills.data
+  db.session.add(project)
+  db.session.commit()
 
 def valid_youtube_link(form, field):
   if form.youtube_url.data is not None and len(form.youtube_url.data) > 0:
@@ -118,16 +117,25 @@ def valid_github_link(form, field):
 
 @app.route('/project/add/<int:id>/image', methods = ['GET', 'POST'])
 def attach_image_to_project(id):
-  MyForm = model_form(Image, base_class=Form, exclude_fk = True, db_session=db.session)
+  MyForm = model_form(Image, base_class=Form, exclude_fk = True, db_session=db.session, field_args={
+    'subtitle': {'validators' : [InputRequired()]},
+    'url': {'validators': [InputRequired(), URL(), valid_image_link]}}
+    )
   image = Image(project_id = id)
   form = MyForm(request.form, image)
   if form.validate_on_submit():
-    image.image_name = form.image_name.data
+    image.subtitle = form.subtitle.data
     image.url = form.url.data
     db.session.add(image)
     db.session.commit()
-    return redirect(url_for("index"))
+    return "/success", 201
   return render_template("create_image.html", form=form, url = "/project/add/" + str(id) + "/image")
+
+def valid_image_link(form, field):
+  url = form.url.data
+  if url is not None and len(url) > 0:
+    if not (url.endswith(".jpg") or url.endswith(".png") or url.endswith(".jpeg") or url.endswith(".gif")):
+      raise ValidationError("Not a valid image format (should be JPEG or PNG or GIF)")
 
 @app.route('/api/v1/delete/image/<int:id>')
 def delete_image(id):

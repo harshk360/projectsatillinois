@@ -13,7 +13,7 @@
             <h4>Uploaded Images</h4>
             <ul>
                 <li ng-repeat="image in project.images">
-                    {{image.image_name}} &nbsp;
+                    {{image.subtitle}} &nbsp;
                     <a ng-click="removeImage(image.id)">[Delete]</a>
                 </li>
             </ul>

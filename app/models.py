@@ -150,17 +150,17 @@ class Image(db.Model):
   project_id = db.Column(db.Integer(), ForeignKey("projects.id"), nullable=False)
   url = db.Column(db.String(255))
   file_name = db.Column(db.String(255))
-  image_name = db.Column(db.String(255), nullable=False)
+  subtitle = db.Column(db.String(255), nullable=False)
 
   def serialize(self):
     return {
       'id' : self.id,
       'url' : self.url,
-      'image_name' : self.image_name
+      'subtitle' : self.subtitle
     }
 
   def __str__(self):
-    return self.image_name
+    return self.subtitle
 
 class Comment(db.Model):
   __tablename__ = "comments"
@@ -201,4 +201,4 @@ class Skill(db.Model):
     }
 
   def __str__(self):
-    return self.name
+    return self.name 

@@ -201,6 +201,10 @@ angular.module('projects')
         $scope.toggleEditable = function () {
             $scope.setEditable = !$scope.setEditable;
         }
+
+        $scope.getYoutubeEmbed = function(id) {
+            return $sce.trustAsResourceUrl("https://www.youtube.com/embed/" + id.substr(-11));
+        };
     })
     .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce) {
         $scope.user = {};

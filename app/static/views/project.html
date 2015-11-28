@@ -39,6 +39,9 @@
             {{project.description}}
             <h2>Skills</h2>
              <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="s in project.skills">{{s.name}}</span></div>
+             <h2 ng-if="project.youtube_url">Watch It</h2>
+             <iframe ng-if="project.youtube_url" ng-src="{{getYoutubeEmbed(project.youtube_url)}}" height=385 width=640></iframe>
+
         </div>
         <div class="col-sm-3" style="text-align:center">
             <h3>Status: {{project.status}}</h3>

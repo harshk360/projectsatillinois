@@ -10,6 +10,9 @@ from wtforms.widgets import TextArea, HiddenInput
 from wtforms.validators import StopValidation, Required, ValidationError, InputRequired, URL
 from copy import deepcopy
 
+import re
+import requests
+
 @app.route('/api/v1/project', defaults={'page': 1})
 @app.route('/api/v1/projects/', defaults={'page': 1})
 @app.route('/api/v1/projects/page/<int:page>')
@@ -107,8 +110,14 @@ def update_fields(project, form):
 
 def valid_youtube_link(form, field):
   if form.youtube_url.data is not None and len(form.youtube_url.data) > 0:
-    if not form.youtube_url.data.startswith("https://www.youtube.com"):
-      raise ValidationError('Youtube link must start with https://www.youtube.com')
+    youtube_regex = (
+    r'(https?://)?(www\.)?'
+    '(youtube|youtu|youtube-nocookie)\.(com|be)/'
+    '(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})')
+  youtube_regex_match = re.match(youtube_regex, form.youtube_url.data)
+  if youtube_regex_match:
+    return
+  raise ValidationError('Invalid YouTube Link')
 
 def valid_github_link(form, field):
   if form.github_url.data is not None and len(form.github_url.data) > 0:
@@ -136,6 +145,8 @@ def valid_image_link(form, field):
   if url is not None and len(url) > 0:
     if not (url.endswith(".jpg") or url.endswith(".png") or url.endswith(".jpeg") or url.endswith(".gif")):
       raise ValidationError("Not a valid image format (should be JPEG or PNG or GIF)")
+    if requests.get(url).status_code is not 200:
+      raise ValidationError("Image is invalid link")
 
 @app.route('/api/v1/delete/image/<int:id>')
 def delete_image(id):

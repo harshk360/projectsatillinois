@@ -2,6 +2,9 @@
     <span class="project-name">{{project.name}}</span>
     <br>
     <span class="project-description">{{project.subtitle}}</span>
+    <div>
+        <a type = "button" class = "btn btn update-button"  ng-click="toggleEditable()" ng-show="isOwner">Toggle View</a>
+    </div>
 </div>
 
 <div class = "container">
@@ -28,7 +31,7 @@
             <div class="carousel-inner" role="listbox">
                 <div class="item"  ng-class="{active:$first}" ng-repeat="image in project.images">
                   <img ng-src="{{image.url}}" alt="...">
-                  <div class="carousel-caption">{{image.image_name}}</div>
+                  <div class="carousel-caption">{{image.subtitle}}</div>
               </div>
           </div>
         </div>

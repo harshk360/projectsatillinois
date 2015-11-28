@@ -124,6 +124,7 @@ angular.module('projects')
                     .success(function(currUser) {
                         if (currUser.id == value.project.owner.id) {
                             $scope.setEditable = true;
+                            $scope.isOwner = true;
                         }
                     });
                 $http
@@ -195,6 +196,10 @@ angular.module('projects')
                     }
                 });
             });
+        }
+
+        $scope.toggleEditable = function () {
+            $scope.setEditable = !$scope.setEditable;
         }
     })
     .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce) {

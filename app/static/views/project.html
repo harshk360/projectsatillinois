@@ -65,7 +65,7 @@
             <p ng-if="project.owner.graduation_month">{{project.owner.graduation_month}} {{project.owner.graduation_year}}</p>
             <h2 ng-if="project.team">Team Members</h2>
             <div class="team-member" ng-repeat="member in project.team_members">
-                <img class="img-responsive img-circle" alt="{{member.full_name}}" style="max-width:50%; margin: auto; display: block;" ng-src="{{project.owner.avatar}}"/>
+                <img class="img-responsive img-circle" alt="{{member.full_name}}" style="max-width:50%; margin: auto; display: block;" ng-src="{{member.avatar}}"/>
                 <h4><a href="#/profile/{{member.id}}">{{member.full_name}}</a></h4>
                 <p ng-if="member.academic_major" style="margin:0px">{{member.academic_major}}</p>
                 <p ng-if="member.graduation_month">{{member.graduation_month}} {{member.graduation_year}}</p>

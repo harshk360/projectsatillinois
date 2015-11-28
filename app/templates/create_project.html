@@ -3,7 +3,7 @@
 <form method="post" action="{{url}}" id="project_form">
     <div class="text-center">
         {% if success %}
-            {{ show_success() }}
+            {{ macros.show_success() }}
         {% endif %}
         {{ form.hidden_tag() }}
         {{ macros.render_bootstrap_field(form.name) }}

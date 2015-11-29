@@ -1,7 +1,7 @@
 from app_and_db import app, db
 from flask import abort, jsonify, redirect, render_template, request, session, url_for
-from math import ceil
-from models import User, Project, Image, Comment, Team_Member
+from math import ceil, sqrt
+from models import User, Project, Image, Comment, Team_Member, Skill
 from sqlalchemy import asc
 from sqlalchemy.sql import func
 from flask.ext.wtf import Form
@@ -11,7 +11,6 @@ from wtforms.fields.html5 import EmailField
 from wtforms.widgets import TextArea, HiddenInput
 from wtforms.validators import StopValidation, Required, ValidationError, InputRequired, URL, Email
 from copy import deepcopy
-from recommendation import search
 
 import re
 import requests
@@ -205,8 +204,57 @@ def attach_comment_to_project(id):
 def recommend_projects():
     user = User.query.filter_by(id=session['id']).first()
     projects = Project.query.filter(Project.status=="In Progress").all()
-    scoreList = recommendation.search(user, projects)
-    return jsonify(scoreList)
+    allSkills = Skill.query.all()
+    scoreList = search(user, projects, allSkills)
+    output = {}
+    output['label'] = "Score List"
+    output['value'] = scoreList
+    return jsonify(output)
 
 class CommentForm(Form):
     comment = TextAreaField('Comment', [InputRequired()])
+
+
+
+def getVectorKeywordIndex(skills):
+    VectorIndex = {}
+    offset = 0
+    for skill in skills:
+        VectorIndex[skill.name] = offset
+        offset += 1
+    return VectorIndex
+
+def makeSkillVector(vectorKeywordIndex, skills):
+    vector = [0] * len(vectorKeywordIndex)
+    for skill in skills:
+        vector[vectorKeywordIndex[skill.name]] += 1
+    return vector
+
+def search(user, projects, allSkills):
+    userSkills = user.skills
+    vectorKeywordIndex = getVectorKeywordIndex(allSkills)
+    userSkillVector = makeSkillVector(vectorKeywordIndex, userSkills)
+    scoreList = []
+    for project in projects:
+        projectSkillVector = makeSkillVector(vectorKeywordIndex, project.skills)
+        score = cosine(projectSkillVector, userSkillVector)
+        bundle = {}
+        bundle['projectId'] = project.id
+        bundle['score'] = score
+        scoreList.append(bundle)
+    return scoreList
+
+def cosine(vector1, vector2):
+    return float(dot(vector1,vector2) / (norm(vector1) * norm(vector2)))
+
+def dot(vector1, vector2):
+    output = 0
+    for dimension, value in enumerate(vector1):
+        output += vector1[dimension]*vector2[dimension]
+    return output
+
+def norm(vector1):
+    output = 0
+    for value in vector1:
+        output += value*value
+    return sqrt(output)

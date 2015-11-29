@@ -76,7 +76,8 @@ class User(db.Model):
         'graduation_month' : self.graduation_month,
         'graduation_year' : self.graduation_year,
         'description' : self.description,
-        'academic_major' : self.academic_major
+        'academic_major' : self.academic_major,
+        'skills' : [skill.serialize() for skill in self.skills]
     }
 
 class Login(db.Model):

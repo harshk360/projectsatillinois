@@ -280,7 +280,7 @@ angular.module('projects')
         };
 
     })
-    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce) {
+    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout) {
         $scope.user = {};
         $scope.setEditable = false;
         $http
@@ -297,6 +297,9 @@ angular.module('projects')
                             .get('/user/update')
                             .success(function(html){
                                 $scope.updateForm = $sce.trustAsHtml(html);
+                                $timeout(function() {
+                                     $scope.setupUserForm();
+                                });
                             })
 
                     })
@@ -308,6 +311,24 @@ angular.module('projects')
             .error(function(err) {
                 console.log(err);
             });
+
+        $scope.setupUserForm = function () {
+            $('#my-select').multiSelect();
+            var form = $('#user-form');
+            $("#submit-user").click(function(event) {
+                event.preventDefault();
+                $.ajax( {
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(response) {
+                        form.replaceWith(response);
+                        console.log(response);
+                        $scope.setupUserForm();
+                    }
+                });
+            });
+        };
     })
     .controller('AddProjectCtrl', function($scope, $http, $sce, $timeout, $location) {
         $http

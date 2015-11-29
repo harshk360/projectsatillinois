@@ -18,22 +18,22 @@ class UpdateUserForm(Form):
 
 @app.route('/user/update', methods = ['GET', 'POST'])
 def update_current_user():
+  MyForm = model_form(User, base_class=Form, exclude_fk=True, db_session=db.session)
   user = db.session.query(User).filter_by(id=session['id']).first()
-  form = UpdateUserForm(request.form)
+  form = MyForm(request.form, user)
   if form.validate_on_submit():
     user.academic_major = form.academic_major.data
     user.graduation_month = form.graduation_month.data
     user.graduation_year = form.graduation_year.data
+    user.skills = form.skills.data
     user.description = form.description.data
     db.session.add(user)
     db.session.commit()
-    return redirect(url_for("index"))
-  else:
-    form.academic_major.data = user.academic_major
-    form.graduation_month.data = user.graduation_month
-    form.graduation_year.data = user.graduation_year
-    form.description.data = user.description
-  return render_template("create_user.html", form=form)
+    return render_template("create_user.html", form=form, success=True, url=url_for('update_current_user'))
+  for field, errors in form.errors.items():
+    for error in errors:
+      print field + " " + error
+  return render_template("create_user.html", form=form, url=url_for('update_current_user'))
 
 @app.route('/api/user/<int:id>')
 def get_user_profile(id):

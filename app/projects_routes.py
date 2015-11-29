@@ -11,6 +11,7 @@ from wtforms.fields.html5 import EmailField
 from wtforms.widgets import TextArea, HiddenInput
 from wtforms.validators import StopValidation, Required, ValidationError, InputRequired, URL, Email
 from copy import deepcopy
+from recommendation import search
 
 import re
 import requests
@@ -71,7 +72,7 @@ def edit_project(id):
   })
   project = db.session.query(Project).filter_by(id=id).first()
   if project is None or project.owner_id != session['id']:
-    abort(404) 
+    abort(404)
   form = MyForm(request.form, project)
   if form.validate_on_submit():
     update_fields(project, form)
@@ -198,6 +199,14 @@ def attach_comment_to_project(id):
     db.session.commit()
     return "success", 201
   return render_template("create_comment.html", form=form, url = "/project/add/" + str(id) + "/comment")
+
+
+@app.route('/recommend', methods = ['GET'])
+def recommend_projects():
+    user = User.query.filter_by(id=session['id']).first()
+    projects = Project.query.filter(Project.status=="In Progress").all()
+    scoreList = recommendation.search(user, projects)
+    return jsonify(scoreList)
 
 class CommentForm(Form):
     comment = TextAreaField('Comment', [InputRequired()])

@@ -114,10 +114,10 @@ def valid_youtube_link(form, field):
     r'(https?://)?(www\.)?'
     '(youtube|youtu|youtube-nocookie)\.(com|be)/'
     '(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})')
-  youtube_regex_match = re.match(youtube_regex, form.youtube_url.data)
-  if youtube_regex_match:
-    return
-  raise ValidationError('Invalid YouTube Link')
+    youtube_regex_match = re.match(youtube_regex, form.youtube_url.data)
+    if youtube_regex_match:
+      return
+    raise ValidationError('Invalid YouTube Link')
 
 def valid_github_link(form, field):
   if form.github_url.data is not None and len(form.github_url.data) > 0:

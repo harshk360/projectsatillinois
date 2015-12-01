@@ -2,7 +2,7 @@
       <div class="content">
         <h1>Welcome to Projects @ ILLINOIS</h1>
         <div class="buttons">
-          <button type="button" class="btn update-button" ng-click="go('/createproject')">Create Project</button>
+          <button type="button" class="btn update-button" ng-click="go('/createproject')" ng-hide="loggedIn">Create Project</button>
           <button type="button" class="btn update-button" id="view-project">View Projects</button>
         </div>
       </div>

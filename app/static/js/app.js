@@ -83,6 +83,19 @@ angular.module('projects')
             });
         });
 
+        $http
+            .get('api/user/current')
+            .success(function(value){
+                 if (value.error){
+                     $scope.loggedIn = false;
+                 }else{
+                     $scope.loggedIn = true;
+                     $scope.user = value.full_name;
+                     $scope.avatar = value.avatar;
+                     $scope.userRoute = "/#/profile/" + value.id;
+                 }
+            });
+
         $scope.defaultImage = "/static/img/hero_blur.jpg";
 
         $scope.initialLoad = function() {
@@ -210,7 +223,7 @@ angular.module('projects')
                             $scope.setupImageForm();
                         },
                         201: function (response) {
-                            $timeout(function(){ 
+                            $timeout(function(){
                                 location.reload();
                             });
                         }
@@ -232,7 +245,7 @@ angular.module('projects')
                             $scope.setupTeamMemberForm();
                         },
                         201: function (response) {
-                            $timeout(function(){ 
+                            $timeout(function(){
                                 location.reload();
                             });
                         }
@@ -255,7 +268,7 @@ angular.module('projects')
                             $scope.setupCommentForm();
                         },
                         201: function (response) {
-                            $timeout(function(){ 
+                            $timeout(function(){
                                 location.reload();
                             });
                         }
@@ -354,7 +367,7 @@ angular.module('projects')
                             $scope.setupForm();
                         },
                         201: function (response) {
-                            $timeout(function(){ 
+                            $timeout(function(){
                                 $location.path(response);
                             });
                         }

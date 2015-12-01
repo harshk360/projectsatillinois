@@ -1,11 +1,11 @@
 /* Setup */
-html, body { 
-    margin: 0; 
-    padding: 0; 
-    width: 100%; 
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
     height: 100%;
     /*font-family: 'BrandonReg';*/
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     background-color: #F0F0F0;
 }
 
@@ -49,7 +49,7 @@ nav {
 }
 
 .navbar-text {
-    margin-top: 12.5px; margin-bottom: 0px; 
+    margin-top: 12.5px; margin-bottom: 0px;
     font-family: 'BrandonReg';
     color:white;
     font-size:18px;
@@ -126,13 +126,13 @@ nav {
 }
 
 .bg-img {
-    opacity: .6; 
+    opacity: .6;
     display: inline-block;
     background-repeat: no-repeat;
     float: left; /* Fix Spacing */
 }
 
-.bg-img:hover { 
+.bg-img:hover {
     animation: lowerOpacity .01s forwards;
     transform: scale(1.01);
 }
@@ -318,6 +318,18 @@ overflow: hidden;
   background-color: #fff;
   color: #EC443F;
   border-color: white;
+}
+
+.project-toggle-button {
+  background-color: #fff;
+  color: #EC443F;
+  border-color: white;
+}
+
+.project-toggle-button.active {
+  background-color: #EC443F;
+  border-color: white;
+  color:white;
 }
 
 .hero {

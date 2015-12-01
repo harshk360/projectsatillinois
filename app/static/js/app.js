@@ -14,6 +14,10 @@ angular
                 templateUrl: 'static/views/home.html',
                 controller: 'ProjectsCtrl'
             })
+            .when('/recommended', {
+                templateUrl: 'static/views/recommend.html',
+                controller: 'ProjectsCtrl'
+            })
             .when('/profile/:profileId', {
                 templateUrl: 'static/views/profile.html',
                 controller: 'ProfileCtrl'
@@ -101,14 +105,23 @@ angular.module('projects')
 
         $scope.initialLoad = function() {
            if ($route.current.$$route.originalPath === '/completed') {
-               $scope.completed = true;
+               $scope.status = "completed";
                $http
                    .get('api/v1/projects/COMPLETED')
                    .success(function(value) {
                        $scope.projects = value.projects;
                    });
+          }
+           else if($route.current.$$route.originalPath === '/recommended') {
+               $scope.status = "recommended";
+               $http
+                   .get('recommend')
+                   .success(function(value) {
+                       console.log(value)
+                       $scope.score_list = value;
+                   });
            } else {
-               $scope.completed = false;
+               $scope.status = "in_progress";
                $http
                    .get('api/v1/projects/IN_PROGRESS')
                    .success(function(value) {

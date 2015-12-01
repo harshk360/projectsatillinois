@@ -74,6 +74,7 @@ angular.module('projects')
                 .get('logout')
                 .success(function(){
                     $scope.loggedIn = false;
+                    $location.path('/home');
                 })
         };
     })
@@ -87,11 +88,24 @@ angular.module('projects')
             });
         });
 
+        $http
+            .get('api/user/current')
+            .success(function(value){
+                 if (value.error){
+                     $scope.loggedIn = false;
+                 }else{
+                     $scope.loggedIn = true;
+                     $scope.user = value.full_name;
+                     $scope.avatar = value.avatar;
+                     $scope.userRoute = "/#/profile/" + value.id;
+                 }
+            });
+
         $scope.defaultImage = "/static/img/hero_blur.jpg";
 
         $scope.initialLoad = function() {
            if ($route.current.$$route.originalPath === '/completed') {
-               $scope.completed = true;
+               $scope.status = "completed";
                $http
                    .get('api/v1/projects/COMPLETED')
                    .success(function(value) {
@@ -99,14 +113,15 @@ angular.module('projects')
                    });
           }
            else if($route.current.$$route.originalPath === '/recommended') {
-               $scope.recommended = true;
+               $scope.status = "recommended";
                $http
                    .get('recommend')
                    .success(function(value) {
+                       console.log(value)
                        $scope.score_list = value;
                    });
            } else {
-               $scope.in_progress = true;
+               $scope.status = "in_progress";
                $http
                    .get('api/v1/projects/IN_PROGRESS')
                    .success(function(value) {
@@ -292,7 +307,7 @@ angular.module('projects')
         };
 
     })
-    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout) {
+    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout, $location) {
         $scope.user = {};
         $scope.setEditable = false;
         $http
@@ -321,6 +336,8 @@ angular.module('projects')
 
             })
             .error(function(err) {
+                alert("This user does not exist!")
+                $location.path("/home");
                 console.log(err);
             });
 
@@ -343,6 +360,11 @@ angular.module('projects')
         };
     })
     .controller('AddProjectCtrl', function($scope, $http, $sce, $timeout, $location) {
+        $http
+            .get('api/user/current')
+            .error(function(value){
+                $location.path('/home');
+            });
         $http
             .get('/project/add')
             .success(function(html){

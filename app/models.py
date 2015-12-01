@@ -48,7 +48,7 @@ class User(db.Model):
   github_auth = db.Column(db.String(255))
   fb_id = db.Column(db.String(255))
   avatar = db.Column(db.String(255))
-  major = Enum('Computer Science', 'Electical Engineering', 'Other')
+  major = Enum('Computer Science', 'Computer Engineering', 'Electical Engineering', 'Other')
   academic_major = db.Column(major)
   month = Enum('May','December')
   year = Enum('2015', '2016', '2017', '2018', '2019', '2020')
@@ -194,7 +194,7 @@ class Skill(db.Model):
   def __init__(self):
     return
 
-  def __init__(self, name, typeName):
+  def __init__(self, name, type):
     self.name = name
     self.type = type
 

@@ -6,16 +6,20 @@
     <div ng-bind-html="updateForm" ng-show="setEditable"></div>
     <div style="text-align:center" ng-hide="setEditable">
         <div ng-if="user.graduation_year">
-            <p><u>Graduation Year:</u></p>
+            <h2>Graduation Year:</h2>
             <span type="text" class="center-block" style="width:20%;text-align:center">{{user.graduation_year}}</span>
         </div>
         <div ng-if="user.academic_major">
-            <p style="margin-top:10px"><u>Major:</u></p>
+            <h2 style="margin-top:10px">Major:</h2>
             <span type="text" class="center-block" style="width:20%;text-align:center"> {{user.academic_major}}</span>
         </div>
         <div ng-if="user.description">
-            <p style="margin-top:10px"><u>About:</u></p>
+            <h2 style="margin-top:10px">About:</h2>
             <span type="text" class="center-block" style="width:20%;text-align:center"> {{user.description}}</span>
+        </div>
+        <div ng-if="user.skills.length > 0">
+            <h2>Skills</h2>
+            <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="s in user.skills">{{s.name}}</span></div>
         </div>
     </div>
 </div>

@@ -70,6 +70,7 @@ angular.module('projects')
                 .get('logout')
                 .success(function(){
                     $scope.loggedIn = false;
+                    $location.reload();
                 })
         };
     })

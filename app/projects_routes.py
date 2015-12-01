@@ -1,7 +1,7 @@
 from app_and_db import app, db
 from flask import abort, jsonify, redirect, render_template, request, session, url_for
-from math import ceil, sqrt
-from models import User, Project, Image, Comment, Team_Member, Skill
+from math import ceil, sqrt, log
+from models import User, Project, Image, Comment, Team_Member, Skill, User_Skill, Project_Skill
 from sqlalchemy import asc
 from sqlalchemy.sql import func
 from flask.ext.wtf import Form
@@ -215,7 +215,7 @@ class CommentForm(Form):
     comment = TextAreaField('Comment', [InputRequired()])
 
 
-
+#---------------------------------------------------------------------------
 def getVectorKeywordIndex(skills):
     VectorIndex = {}
     offset = 0
@@ -224,23 +224,28 @@ def getVectorKeywordIndex(skills):
         offset += 1
     return VectorIndex
 
-def makeSkillVector(vectorKeywordIndex, skills):
+def makeSkillVector(vectorKeywordIndex, skills, isProject):
     vector = [0] * len(vectorKeywordIndex)
     for skill in skills:
-        vector[vectorKeywordIndex[skill.name]] += 1
+        if isProject:
+            project_skill_all = Project_Skill.query.all()
+            vector[vectorKeywordIndex[skill.name]] += tfidf(skill.id, skills, project_skill_all)
+        else:
+            user_skill_all = User_Skill.query.all()
+            vector[vectorKeywordIndex[skill.name]] += tfidf(skill.id, skills, user_skill_all)
     return vector
 
 def search(user, projects, allSkills):
     userSkills = user.skills
     vectorKeywordIndex = getVectorKeywordIndex(allSkills)
-    userSkillVector = makeSkillVector(vectorKeywordIndex, userSkills)
+    userSkillVector = makeSkillVector(vectorKeywordIndex, userSkills, False)
     scoreList = []
     for project in projects:
-        projectSkillVector = makeSkillVector(vectorKeywordIndex, project.skills)
+        projectSkillVector = makeSkillVector(vectorKeywordIndex, project.skills, True)
         score = cosine(projectSkillVector, userSkillVector)
         bundle = {}
         bundle['projectId'] = project.id
-        bundle['score'] = score
+        bundle['vector score'] = score
         scoreList.append(bundle)
     return scoreList
 
@@ -258,3 +263,17 @@ def norm(vector1):
     for value in vector1:
         output += value*value
     return sqrt(output)
+
+#---------------------------------------------------------------------------
+
+def tf(skill_id, skills):
+    return 1.0/len(skills)
+
+def n_containing(skill_id, x_skill_all):
+    return sum(1.0 for x_skill in x_skill_all if x_skill.skill_id == skill_id)
+
+def idf(skill_id, x_skill_all):
+    return log(len(x_skill_all)) / (1.0 + n_containing(skill_id, x_skill_all))
+
+def tfidf(skill_id, skills, x_skill_all):
+    return tf(skill_id, skills) * idf(skill_id, x_skill_all)

@@ -211,13 +211,13 @@ def get_trending_projects():
   per_project_visits = total_project_visits.group_by(Project.id).order_by(desc(project_count)).all()
 
   project_visit_data = []
-  for visit, project, count in per_project_visits:
+  for visit, project, views in per_project_visits:
     comments = db.session.query(func.count(Comment.project_id)).filter(Comment.project_id == project.id).scalar()
-    data = {'name': project.name, 'visits': count, 'comments': comments}
+    # currently doesn't change with time
+    score = views + 3 * comments
+    data = {'name': project.name, 'visits': views, 'comments': comments, 'score': score}
     project_visit_data.append(data)
 
-  # project_visit_data = [{'name': project.name, 'visits': count} for visit, project, count in per_project_visits]
-  # for comment, project, count in per_project_comments:
-
+  project_visit_data.sort(key=lambda x: x['score'], reverse=True)
 
   return jsonify(projects=project_visit_data)

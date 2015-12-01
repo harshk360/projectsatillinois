@@ -70,7 +70,7 @@ angular.module('projects')
                 .get('logout')
                 .success(function(){
                     $scope.loggedIn = false;
-                    $location.reload();
+                    $location.path('/home');
                 })
         };
     })
@@ -345,6 +345,11 @@ angular.module('projects')
         };
     })
     .controller('AddProjectCtrl', function($scope, $http, $sce, $timeout, $location) {
+        $http
+            .get('api/user/current')
+            .error(function(value){
+                $location.path('/home');
+            });
         $http
             .get('/project/add')
             .success(function(html){

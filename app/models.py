@@ -194,7 +194,7 @@ class Skill(db.Model):
   def __init__(self):
     return
 
-  def __init__(self, name, typeName):
+  def __init__(self, name, type):
     self.name = name
     self.type = type
 

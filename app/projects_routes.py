@@ -209,6 +209,9 @@ def recommend_projects():
     output = {}
     output['label'] = "Score List"
     output['value'] = scoreList
+    for bundle in output['value']:
+        project = Project.query.filter_by(id=bundle['project_id']).first()
+        bundle['project'] = project.serialize()
     return jsonify(output)
 
 class CommentForm(Form):
@@ -244,10 +247,12 @@ def search(user, projects, allSkills):
         projectSkillVector = makeSkillVector(vectorKeywordIndex, project.skills, True)
         score = cosine(projectSkillVector, userSkillVector)
         bundle = {}
-        bundle['projectId'] = project.id
-        bundle['vector score'] = score
+        bundle['project_id'] = project.id
+        bundle['vector_score'] = score
         scoreList.append(bundle)
-    return scoreList
+    sortedScoreList = sorted(scoreList, key=lambda k: k['vector_score'])
+    cutoffList = sortedScoreList[:4]
+    return cutoffList
 
 def cosine(vector1, vector2):
     return float(dot(vector1,vector2) / (norm(vector1) * norm(vector2)))

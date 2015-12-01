@@ -14,6 +14,10 @@ angular
                 templateUrl: 'static/views/home.html',
                 controller: 'ProjectsCtrl'
             })
+            .when('/recommended', {
+                templateUrl: 'static/views/recommend.html',
+                controller: 'ProjectsCtrl'
+            })
             .when('/profile/:profileId', {
                 templateUrl: 'static/views/profile.html',
                 controller: 'ProfileCtrl'
@@ -93,8 +97,16 @@ angular.module('projects')
                    .success(function(value) {
                        $scope.projects = value.projects;
                    });
+          }
+           else if($route.current.$$route.originalPath === '/recommended') {
+               $scope.recommended = true;
+               $http
+                   .get('recommend')
+                   .success(function(value) {
+                       $scope.score_list = value;
+                   });
            } else {
-               $scope.completed = false;
+               $scope.in_progress = true;
                $http
                    .get('api/v1/projects/IN_PROGRESS')
                    .success(function(value) {
@@ -210,7 +222,7 @@ angular.module('projects')
                             $scope.setupImageForm();
                         },
                         201: function (response) {
-                            $timeout(function(){ 
+                            $timeout(function(){
                                 location.reload();
                             });
                         }
@@ -232,7 +244,7 @@ angular.module('projects')
                             $scope.setupTeamMemberForm();
                         },
                         201: function (response) {
-                            $timeout(function(){ 
+                            $timeout(function(){
                                 location.reload();
                             });
                         }
@@ -255,7 +267,7 @@ angular.module('projects')
                             $scope.setupCommentForm();
                         },
                         201: function (response) {
-                            $timeout(function(){ 
+                            $timeout(function(){
                                 location.reload();
                             });
                         }
@@ -354,7 +366,7 @@ angular.module('projects')
                             $scope.setupForm();
                         },
                         201: function (response) {
-                            $timeout(function(){ 
+                            $timeout(function(){
                                 $location.path(response);
                             });
                         }

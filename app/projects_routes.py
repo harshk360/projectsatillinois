@@ -205,21 +205,19 @@ class CommentForm(Form):
 
 @app.route('/projects/trending', methods=['GET'])
 def get_trending_projects():
-  # num_visits = Visit.query.filter(Visit.timestamp < func.now()).order_by(asc(Visit.id)).offset(0).limit(20)
-  # print db.session.query(Visit).all()
-  # project_visits = db.session.query(Visit, func.count(Visit.project_id)).filter(Visit.project_id != None).group_by(Visit.project_id).join(Visit.project_id).all()
-    # .join('project_id').group_by(Visit.url).all()
+  project_count = func.count(Project.id).label('project_count')
 
-  view_count = func.count(Project.id).label('view_count')
-  total_project_visits = db.session.query(Visit, Project, view_count).join(Project)
-  per_project_visits = total_project_visits.group_by(Project.id).order_by(desc(view_count)).all()
+  total_project_visits = db.session.query(Visit, Project, project_count).join(Project)
+  per_project_visits = total_project_visits.group_by(Project.id).order_by(desc(project_count)).all()
 
-  # project_url_visits = Visit.url.ilike('/api/v1/project/%')
-  # project_visits = db.session.query(Visit, func.count(Visit.url)).filter(project_url_visits).group_by(Visit.url).all()
+  project_visit_data = []
+  for visit, project, count in per_project_visits:
+    comments = db.session.query(func.count(Comment.project_id)).filter(Comment.project_id == project.id).scalar()
+    data = {'name': project.name, 'visits': count, 'comments': comments}
+    project_visit_data.append(data)
 
-  # extract project name
-  # return jsonify([(pid, count) for url, pid, count in project_visits])
+  # project_visit_data = [{'name': project.name, 'visits': count} for visit, project, count in per_project_visits]
+  # for comment, project, count in per_project_comments:
 
-  project_visit_data = [{'name': project.name, 'visits': count} for visit, project, count in per_project_visits]
 
   return jsonify(projects=project_visit_data)

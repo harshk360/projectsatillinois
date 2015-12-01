@@ -1,8 +1,8 @@
 from app_and_db import app, db
 from flask import abort, jsonify, redirect, render_template, request, session, url_for
 from math import ceil
-from models import User, Project, Image, Comment, Team_Member
-from sqlalchemy import asc
+from models import User, Project, Image, Comment, Team_Member, Visit
+from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from flask.ext.wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
@@ -201,3 +201,25 @@ def attach_comment_to_project(id):
 
 class CommentForm(Form):
     comment = TextAreaField('Comment', [InputRequired()])
+
+
+@app.route('/projects/trending', methods=['GET'])
+def get_trending_projects():
+  # num_visits = Visit.query.filter(Visit.timestamp < func.now()).order_by(asc(Visit.id)).offset(0).limit(20)
+  # print db.session.query(Visit).all()
+  # project_visits = db.session.query(Visit, func.count(Visit.project_id)).filter(Visit.project_id != None).group_by(Visit.project_id).join(Visit.project_id).all()
+    # .join('project_id').group_by(Visit.url).all()
+
+  view_count = func.count(Project.id).label('view_count')
+  total_project_visits = db.session.query(Visit, Project, view_count).join(Project)
+  per_project_visits = total_project_visits.group_by(Project.id).order_by(desc(view_count)).all()
+
+  # project_url_visits = Visit.url.ilike('/api/v1/project/%')
+  # project_visits = db.session.query(Visit, func.count(Visit.url)).filter(project_url_visits).group_by(Visit.url).all()
+
+  # extract project name
+  # return jsonify([(pid, count) for url, pid, count in project_visits])
+
+  project_visit_data = [{'name': project.name, 'visits': count} for visit, project, count in per_project_visits]
+
+  return jsonify(projects=project_visit_data)

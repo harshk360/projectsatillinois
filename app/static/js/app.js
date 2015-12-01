@@ -294,7 +294,7 @@ angular.module('projects')
         };
 
     })
-    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout) {
+    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout, $location) {
         $scope.user = {};
         $scope.setEditable = false;
         $http
@@ -323,6 +323,8 @@ angular.module('projects')
 
             })
             .error(function(err) {
+                alert("This user does not exist!")
+                $location.path("/home");
                 console.log(err);
             });
 

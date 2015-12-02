@@ -2,7 +2,7 @@ from app_and_db import app, db
 from flask import abort, jsonify, redirect, render_template, request, session, url_for
 from math import ceil, sqrt, log
 from models import User, Project, Image, Comment, Team_Member, Skill, User_Skill, Project_Skill, Visit
-from sqlalchemy import asc
+from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from flask.ext.wtf import Form
 from wtforms.ext.sqlalchemy.orm import model_form
@@ -217,6 +217,31 @@ def recommend_projects():
 
 class CommentForm(Form):
     comment = TextAreaField('Comment', [InputRequired()])
+
+
+@app.route('/projects/trending', methods=['GET'])
+def get_trending_projects():
+  project_count = func.count(Project.id).label('project_count')
+
+  total_project_visits = db.session.query(Visit, Project, project_count).join(Project)
+  per_project_visits = total_project_visits.group_by(Project.id).order_by(desc(project_count)).all()
+
+  project_visit_data = []
+  for visit, project, views in per_project_visits:
+    comments = db.session.query(func.count(Comment.project_id)).filter(Comment.project_id == project.id).scalar()
+    # currently doesn't change with time
+    score = views + 3 * comments
+    data = {'project': project, 'visits': views, 'comments': comments, 'score': score}
+    project_visit_data.append(data)
+
+  project_visit_data.sort(key=lambda x: x['score'], reverse=True)
+
+  trending_projects_list = []
+  for project in project_visit_data:
+      trending_projects_list.append(project['project'].serialize())
+
+  return jsonify(projects=trending_projects_list)
+
 
 @app.route('/api/admin/requests')
 def logins_by_date():

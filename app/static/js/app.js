@@ -14,6 +14,10 @@ angular
                 templateUrl: 'static/views/home.html',
                 controller: 'ProjectsCtrl'
             })
+            .when('/recommended', {
+                templateUrl: 'static/views/recommend.html',
+                controller: 'ProjectsCtrl'
+            })
             .when('/profile/:profileId', {
                 templateUrl: 'static/views/profile.html',
                 controller: 'ProfileCtrl'
@@ -70,6 +74,7 @@ angular.module('projects')
                 .get('logout')
                 .success(function(){
                     $scope.loggedIn = false;
+                    $location.path('/home');
                 })
         };
     })
@@ -100,14 +105,24 @@ angular.module('projects')
 
         $scope.initialLoad = function() {
            if ($route.current.$$route.originalPath === '/completed') {
-               $scope.completed = true;
+               $scope.status = "completed";
                $http
                    .get('api/v1/projects/COMPLETED')
                    .success(function(value) {
                        $scope.projects = value.projects;
                    });
+          }
+           else if($route.current.$$route.originalPath === '/recommended') {
+               $scope.status = "recommended";
+               $http
+                   .get('recommend')
+                   .success(function(value) {
+                       console.log(value)
+                       $scope.score_list = value;
+                       $scope.score_list.value = $scope.score_list.value.reverse()
+                   });
            } else {
-               $scope.completed = false;
+               $scope.status = "in_progress";
                $http
                    .get('api/v1/projects/IN_PROGRESS')
                    .success(function(value) {
@@ -293,7 +308,7 @@ angular.module('projects')
         };
 
     })
-    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout) {
+    .controller('ProfileCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout, $location) {
         $scope.user = {};
         $scope.setEditable = false;
         $http
@@ -322,6 +337,8 @@ angular.module('projects')
 
             })
             .error(function(err) {
+                alert("This user does not exist!")
+                $location.path("/home");
                 console.log(err);
             });
 
@@ -344,6 +361,11 @@ angular.module('projects')
         };
     })
     .controller('AddProjectCtrl', function($scope, $http, $sce, $timeout, $location) {
+        $http
+            .get('api/user/current')
+            .error(function(value){
+                $location.path('/home');
+            });
         $http
             .get('/project/add')
             .success(function(html){

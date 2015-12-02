@@ -2,7 +2,7 @@
       <div class="content">
         <h1>Welcome to Projects @ ILLINOIS</h1>
         <div class="buttons">
-          <button type="button" class="btn update-button" ng-click="go('/createproject')" ng-hide="!loggedIn">Create Project</button>
+          <button type="button" class="btn update-button" ng-click="go('/createproject')" ng-show="loggedIn">Create Project</button>
           <button type="button" class="btn update-button" id="view-project">View Projects</button>
         </div>
       </div>
@@ -11,8 +11,9 @@
 <div class = "index container">
     <div class="text-center">
         <div class="btn-group" role="group" aria-label="..." style="align-content:center">
-            <button type="button" class="btn project-toggle-button" ng-click="go('/completed')" ng-class="{active: completed}">Completed</button>
-            <button type="button" class="btn project-toggle-button" ng-click="go('/inprogress')" ng-class="{active: !completed}">In Progress</button>
+            <button type="button" class="btn project-toggle-button" ng-click="go('/completed')" ng-class="{active: status == 'completed'}">Completed</button>
+            <button type="button" class="btn project-toggle-button" ng-click="go('/inprogress')" ng-class="{active: status == 'in_progress'}">In Progress</button>
+            <button type="button" class="btn project-toggle-button" ng-click="go('/recommended')" ng-class="{active: status == 'recommended'}">Recommended</button>
         </div>
     </div>
     <div class="row" style="margin-top:20px">

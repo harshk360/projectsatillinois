@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $.ajax({
-        url: "/api/admin/logins",
+        url: "/api/admin/requests",
         method: "GET",
         success: function(response) {
             Morris.Line({
@@ -8,7 +8,7 @@ $(document).ready(function() {
               data: JSON.parse(response),
               xkey: 'y',
               ykeys: ['a'],
-              labels: ['Logins']
+              labels: ['Requests']
           });
 
         } 

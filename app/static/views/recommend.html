@@ -10,6 +10,8 @@
     <div ng-repeat="bundle in score_list.value">
       <div class="clearfix" ng-if="$index % 3 == 0"></div>
       <div class="col-md-4 col-sm-6 col-xs-6 text-center">
+        <div class="panel-body non-semantic-protector" style="background: url('{{bundle.project.images[0].url || defaultImage}}') no-repeat; background-size: cover; background-position: center; height: 300px">
+        </div>
         <div class="panel panel-default">
           <div class="panel-footer">
             <div class="row">

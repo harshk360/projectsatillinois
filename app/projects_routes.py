@@ -1,7 +1,7 @@
 from app_and_db import app, db
 from flask import abort, jsonify, redirect, render_template, request, session, url_for
 from math import ceil
-from models import User, Project, Image, Comment, Team_Member
+from models import User, Project, Image, Comment, Team_Member, Login
 from sqlalchemy import asc
 from sqlalchemy.sql import func
 from flask.ext.wtf import Form
@@ -14,6 +14,7 @@ from copy import deepcopy
 
 import re
 import requests
+import datetime
 
 @app.route('/api/v1/project', defaults={'page': 1})
 @app.route('/api/v1/projects/', defaults={'page': 1})
@@ -201,3 +202,19 @@ def attach_comment_to_project(id):
 
 class CommentForm(Form):
     comment = TextAreaField('Comment', [InputRequired()])
+
+@app.route('/api/admin/logins')
+def logins_by_date():
+  counts = dict()
+  for diff in range(10):
+    date = datetime.date.today() - datetime.timedelta(days=diff)
+    dayafter = date + datetime.timedelta(days=1)
+    count = db.session.query(Login).filter(Login.timestamp > date, Login.timestamp < dayafter).count()
+    date_str = str(date)
+    counts[date_str] = count
+  string = "["
+  for key, value in counts.iteritems():
+    string += "{ \"y\":\"" + key + "\", \"a\":" + str(value) + "}," 
+  string = string[:-1]
+  string += "]"
+  return string

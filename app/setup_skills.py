@@ -4,24 +4,26 @@ from startup import init_app
 
 init_app(app, db)
 
-skills = {
+mobile = {
   'Android' : 'Mobile',
   'iOS' : 'Mobile',
   'Windows Phone' : 'Mobile',
   'Phone Gap' : 'Mobile',
   'Cordova' : 'Mobile',
   'Objective-C' : 'Mobile',
-  'Swift' : 'Mobile',
-  
+  'Swift' : 'Mobile'
+  }
+databases = {
   'SQL' : 'Databases',
   'MySQL' : 'Databases',
   'PostgreSQL' : 'Databases',
   'MongoDB' : 'Databases',
   'Firebase' : 'Databases',
   'Oracle' : 'Databases',
-  'Microsoft SQL Server' : 'Databases',
+  'Microsoft SQL Server' : 'Databases'
+  }
 
-  'Javascript' : 'Web Development',
+web_dev = {'Javascript' : 'Web Development',
   'JQuery' : 'Web Development',
   'Bootstrap' : 'Web Development',
   'AngularJS' : 'Web Development',
@@ -35,9 +37,10 @@ skills = {
   'NodeJS' : 'Web Development',
   'Express' : 'Web Development',
   'HTML' : 'Web Development',
-  'CSS' : 'Web Development',
+  'CSS' : 'Web Development'
+  }
 
-  'Python' : 'Programming Languages',
+languages = {'Python' : 'Programming Languages',
   'Java' : 'Programming Languages',
   'C++' : 'Programming Languages',
   'C' : 'Programming Languages',
@@ -49,7 +52,22 @@ skills = {
 }
 
 
-for key, value in skills.items():
+for key, value in mobile.items():
+  skill = Skill(key, value)
+  db.session.add(skill)
+db.session.commit()
+
+for key, value in databases.items():
+  skill = Skill(key, value)
+  db.session.add(skill)
+db.session.commit()
+
+for key, value in web_dev.items():
+  skill = Skill(key, value)
+  db.session.add(skill)
+db.session.commit()
+
+for key, value in languages.items():
   skill = Skill(key, value)
   db.session.add(skill)
 db.session.commit()

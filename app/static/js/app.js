@@ -95,14 +95,19 @@ angular.module('projects')
         $http
             .get('api/user/current')
             .success(function(value){
-                 if (value.error){
-                     $scope.loggedIn = false;
-                 }else{
-                     $scope.loggedIn = true;
-                     $scope.user = value.full_name;
-                     $scope.avatar = value.avatar;
-                     $scope.userRoute = "/#/profile/" + value.id;
-                 }
+               if (value.error){
+                   $scope.loggedIn = false;
+               }else{
+                   $scope.loggedIn = true;
+                   $scope.user = value.full_name;
+                   $scope.avatar = value.avatar;
+                   $scope.userRoute = "/#/profile/" + value.id;
+                   $('#create-project').show();
+               }
+            })
+            .error(function(err){
+                $('#create-project').hide();
+                 $scope.loggedIn = false;
             });
 
         $scope.defaultImage = "/static/img/hero_blur.jpg";

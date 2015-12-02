@@ -2,7 +2,7 @@
       <div class="content">
         <h1>Welcome to Projects @ ILLINOIS</h1>
         <div class="buttons">
-          <button type="button" class="btn update-button" ng-click="go('/createproject')" ng-show="loggedIn">Create Project</button>
+          <button type="button" class="btn update-button" id="create-project" ng-click="go('/createproject')">Create Project</button>
           <button type="button" class="btn update-button" id="view-project">View Projects</button>
         </div>
       </div>
@@ -18,6 +18,7 @@
         </div>
     </div>
     <div class="row" style="margin-top:20px">
+        <h4 ng-show="projects.length == 0" style="text-align:center; margin-bottom: 20px">No Projects to Show!</h4>
         <div ng-repeat="p in projects">
             <div class="clearfix" ng-if="$index % 3 == 0"></div>
             <div class="col-md-4 col-sm-6 col-xs-6 text-center">
@@ -43,16 +44,4 @@
             </div>
         </div>
     </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content text-center">
-                <div class="modal-body">
-                    <div ng-bind-html="createProjectForm" class="modal-body"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>

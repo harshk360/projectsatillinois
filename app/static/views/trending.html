@@ -9,6 +9,32 @@
   </div>
   <div class="row" style="margin-top:20px">
     <h4 style="text-align:center; margin-bottom:20px">Trending Projects</h4>
+    <div class="row" style="margin-top:20px">
+        <div ng-repeat="p in projects">
+            <div class="clearfix" ng-if="$index % 3 == 0"></div>
+            <div class="col-md-4 col-sm-6 col-xs-6 text-center">
+                <div class="panel-body non-semantic-protector" style="background: url('{{p.images[0].url || defaultImage}}') no-repeat; background-size: cover; background-position: center; height: 300px">
+                </div>
+                <div class = "panel panel-default">
+                    <div class="panel-footer">
+                        <div class="row">
+                            <a href="#/project/{{p.id}}"><h3 style="margin-top:5px; text-align: center" >{{p.name}}</h3></a>
+                            <div class="col-sm-9" style="text-align: left">
+                                <p class="truncate">{{p.subtitle}}</p>
+                                <div class="skills" style="word-wrap:break-word"><span class="skill" ng-repeat="s in p.skills">{{s.name}}</span></div>
+                            </div>
+                            <div class="col-sm-3"  style="text-align: center;">
+                                <img src="{{p.owner.avatar}}" class="img-responsive img-circle" alt="{{p.owner.full_name}}" style="max-width:75%; margin: auto; display: block;"/>
+                                <h5><a href="#/profile/{{p.owner.id}}">{{p.owner.full_name}}</a></h5>
+                                <a style="color:black" href="{{p.github_url}}" ng-if="p.github_url"><i class="fa fa-2x fa-github-square"></i></a>
+                                <a style="color:black" href="{{p.youtube_url}}" ng-if="p.youtube_url"><i class="fa fa-2x fa-youtube-square"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
   </div>
 </div>
 </div>

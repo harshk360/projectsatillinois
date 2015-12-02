@@ -231,12 +231,16 @@ def get_trending_projects():
     comments = db.session.query(func.count(Comment.project_id)).filter(Comment.project_id == project.id).scalar()
     # currently doesn't change with time
     score = views + 3 * comments
-    data = {'name': project.name, 'visits': views, 'comments': comments, 'score': score}
+    data = {'project': project, 'visits': views, 'comments': comments, 'score': score}
     project_visit_data.append(data)
 
   project_visit_data.sort(key=lambda x: x['score'], reverse=True)
 
-  return jsonify(projects=project_visit_data)
+  trending_projects_list = []
+  for project in project_visit_data:
+      trending_projects_list.append(project['project'].serialize())
+
+  return jsonify(projects=trending_projects_list)
 
 
 @app.route('/api/admin/requests')

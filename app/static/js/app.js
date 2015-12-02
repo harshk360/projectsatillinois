@@ -129,7 +129,7 @@ angular.module('projects')
                $http
                    .get('projects/trending')
                    .success(function(value) {
-                       // TODO
+                       $scope.projects = value.projects;
                    });
            } else {
                $scope.status = "in_progress";

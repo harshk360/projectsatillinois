@@ -15,11 +15,11 @@ angular
                 controller: 'ProjectsCtrl'
             })
             .when('/recommended', {
-                templateUrl: 'static/views/recommend.html',
+                templateUrl: 'static/views/home.html',
                 controller: 'ProjectsCtrl'
             })
             .when('/trending', {
-                templateUrl: 'static/views/trending.html',
+                templateUrl: 'static/views/home.html',
                 controller: 'ProjectsCtrl'
             })
             .when('/profile/:profileId', {
@@ -120,9 +120,11 @@ angular.module('projects')
                $http
                    .get('recommend')
                    .success(function(value) {
-                       console.log(value)
-                       $scope.score_list = value;
-                       $scope.score_list.value = $scope.score_list.value.reverse()
+                       var projects = [];
+                       for (var i of value.value) {
+                         projects.push(i.project);
+                       }
+                       $scope.projects = projects;
                    });
            } else if ($route.current.$$route.originalPath === '/trending') {
                $scope.status = "trending";

@@ -59,7 +59,7 @@
         <div class="col-sm-3" style="text-align:center">
             <h2>Status:</h2><h4>{{project.status}}</h4>
             <h2>Owner:</h2>
-            <img class="img-responsive img-circle" alt="{{project.owner.full_name}}" style="max-width:50%; margin: auto; display: block;" ng-src="{{project.owner.avatar}}"/>
+            <img class="img-responsive img-circle" alt="{{project.owner.full_name}}" style="max-width:50%; max-height: 50%; margin: auto; display: block;" ng-src="{{project.owner.avatar}}"/>
             <h4><a href="#/profile/{{project.owner.id}}">{{project.owner.full_name}}</a></h4>
             <p ng-if="project.owner.academic_major" style="margin:0px">{{project.owner.academic_major}}</p>
             <p ng-if="project.owner.graduation_month">{{project.owner.graduation_month}} {{project.owner.graduation_year}}</p>

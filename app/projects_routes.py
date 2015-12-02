@@ -1,7 +1,7 @@
 from app_and_db import app, db
 from flask import abort, jsonify, redirect, render_template, request, session, url_for
-from math import ceil
-from models import User, Project, Image, Comment, Team_Member, Visit
+from math import ceil, sqrt, log
+from models import User, Project, Image, Comment, Team_Member, Skill, User_Skill, Project_Skill, Visit
 from sqlalchemy import asc, desc
 from sqlalchemy.sql import func
 from flask.ext.wtf import Form
@@ -14,6 +14,7 @@ from copy import deepcopy
 
 import re
 import requests
+import datetime
 
 @app.route('/api/v1/project', defaults={'page': 1})
 @app.route('/api/v1/projects/', defaults={'page': 1})
@@ -71,7 +72,7 @@ def edit_project(id):
   })
   project = db.session.query(Project).filter_by(id=id).first()
   if project is None or project.owner_id != session['id']:
-    abort(404) 
+    abort(404)
   form = MyForm(request.form, project)
   if form.validate_on_submit():
     update_fields(project, form)
@@ -199,6 +200,21 @@ def attach_comment_to_project(id):
     return "success", 201
   return render_template("create_comment.html", form=form, url = "/project/add/" + str(id) + "/comment")
 
+
+@app.route('/recommend', methods = ['GET'])
+def recommend_projects():
+    user = User.query.filter_by(id=session['id']).first()
+    projects = Project.query.filter(Project.status=="In Progress").all()
+    allSkills = Skill.query.all()
+    scoreList = search(user, projects, allSkills)
+    output = {}
+    output['label'] = "Score List"
+    output['value'] = scoreList
+    for bundle in output['value']:
+        project = Project.query.filter_by(id=bundle['project_id']).first()
+        bundle['project'] = project.serialize()
+    return jsonify(output)
+
 class CommentForm(Form):
     comment = TextAreaField('Comment', [InputRequired()])
 
@@ -221,3 +237,85 @@ def get_trending_projects():
   project_visit_data.sort(key=lambda x: x['score'], reverse=True)
 
   return jsonify(projects=project_visit_data)
+
+
+@app.route('/api/admin/requests')
+def logins_by_date():
+  counts = dict()
+  for diff in range(10):
+    date = datetime.date.today() - datetime.timedelta(days=diff)
+    dayafter = date + datetime.timedelta(days=1)
+    count = db.session.query(Visit).filter(Visit.timestamp > date, Visit.timestamp < dayafter).count()
+    date_str = str(date)
+    counts[date_str] = count
+  string = "["
+  for key, value in counts.iteritems():
+    string += "{ \"y\":\"" + key + "\", \"a\":" + str(value) + "}," 
+  string = string[:-1]
+  string += "]"
+  return string
+
+#---------------------------------------------------------------------------
+def getVectorKeywordIndex(skills):
+    VectorIndex = {}
+    offset = 0
+    for skill in skills:
+        VectorIndex[skill.name] = offset
+        offset += 1
+    return VectorIndex
+
+def makeSkillVector(vectorKeywordIndex, skills, isProject):
+    vector = [0] * len(vectorKeywordIndex)
+    for skill in skills:
+        if isProject:
+            project_skill_all = Project_Skill.query.all()
+            vector[vectorKeywordIndex[skill.name]] += tfidf(skill.id, skills, project_skill_all)
+        else:
+            user_skill_all = User_Skill.query.all()
+            vector[vectorKeywordIndex[skill.name]] += tfidf(skill.id, skills, user_skill_all)
+    return vector
+
+def search(user, projects, allSkills):
+    userSkills = user.skills
+    vectorKeywordIndex = getVectorKeywordIndex(allSkills)
+    userSkillVector = makeSkillVector(vectorKeywordIndex, userSkills, False)
+    scoreList = []
+    for project in projects:
+        projectSkillVector = makeSkillVector(vectorKeywordIndex, project.skills, True)
+        score = cosine(projectSkillVector, userSkillVector)
+        bundle = {}
+        bundle['project_id'] = project.id
+        bundle['vector_score'] = score
+        scoreList.append(bundle)
+    sortedScoreList = sorted(scoreList, key=lambda k: k['vector_score'])
+    cutoffList = sortedScoreList[:4]
+    return cutoffList
+
+def cosine(vector1, vector2):
+    return float(dot(vector1,vector2) / (norm(vector1) * norm(vector2)))
+
+def dot(vector1, vector2):
+    output = 0
+    for dimension, value in enumerate(vector1):
+        output += vector1[dimension]*vector2[dimension]
+    return output
+
+def norm(vector1):
+    output = 0
+    for value in vector1:
+        output += value*value
+    return sqrt(output)
+
+#---------------------------------------------------------------------------
+
+def tf(skill_id, skills):
+    return 1.0/len(skills)
+
+def n_containing(skill_id, x_skill_all):
+    return sum(1.0 for x_skill in x_skill_all if x_skill.skill_id == skill_id)
+
+def idf(skill_id, x_skill_all):
+    return log(len(x_skill_all)) / (1.0 + n_containing(skill_id, x_skill_all))
+
+def tfidf(skill_id, skills, x_skill_all):
+    return tf(skill_id, skills) * idf(skill_id, x_skill_all)

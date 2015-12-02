@@ -18,6 +18,10 @@ angular
                 templateUrl: 'static/views/recommend.html',
                 controller: 'ProjectsCtrl'
             })
+            .when('/trending', {
+                templateUrl: 'static/views/trending.html',
+                controller: 'ProjectsCtrl'
+            })
             .when('/profile/:profileId', {
                 templateUrl: 'static/views/profile.html',
                 controller: 'ProfileCtrl'
@@ -104,15 +108,14 @@ angular.module('projects')
         $scope.defaultImage = "/static/img/hero_blur.jpg";
 
         $scope.initialLoad = function() {
-           if ($route.current.$$route.originalPath === '/completed') {
-               $scope.status = "completed";
-               $http
-                   .get('api/v1/projects/COMPLETED')
-                   .success(function(value) {
-                       $scope.projects = value.projects;
-                   });
-          }
-           else if($route.current.$$route.originalPath === '/recommended') {
+            if ($route.current.$$route.originalPath === '/completed') {
+                $scope.status = "completed";
+                $http
+                    .get('api/v1/projects/COMPLETED')
+                    .success(function(value) {
+                        $scope.projects = value.projects;
+                    });
+           } else if($route.current.$$route.originalPath === '/recommended') {
                $scope.status = "recommended";
                $http
                    .get('recommend')
@@ -120,6 +123,13 @@ angular.module('projects')
                        console.log(value)
                        $scope.score_list = value;
                        $scope.score_list.value = $scope.score_list.value.reverse()
+                   });
+           } else if ($route.current.$$route.originalPath === '/trending') {
+               $scope.status = "trending";
+               $http
+                   .get('projects/trending')
+                   .success(function(value) {
+                       // TODO
                    });
            } else {
                $scope.status = "in_progress";

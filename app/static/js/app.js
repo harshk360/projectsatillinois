@@ -118,7 +118,8 @@ angular.module('projects')
                    .get('recommend')
                    .success(function(value) {
                        console.log(value)
-                       $scope.score_list = value.reverse();
+                       $scope.score_list = value;
+                       $scope.score_list.value = $scope.score_list.value.reverse()
                    });
            } else {
                $scope.status = "in_progress";

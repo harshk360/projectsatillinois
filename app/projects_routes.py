@@ -86,7 +86,8 @@ def create_new_project():
     'description': {'widget': TextArea()},
     'youtube_url': {'validators': [valid_youtube_link]},
     'github_url': {'validators': [valid_github_link]},
-    'cost' : {'description' : "You can provide a reward for helping with a project"}
+    'cost': {'label': 'Bounty Offered',
+             'description': "You can provide a reward for helping with a project"}
   })
   project = Project()
   form = MyForm(request.form, project)

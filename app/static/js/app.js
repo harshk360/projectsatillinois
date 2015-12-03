@@ -130,6 +130,9 @@ angular.module('projects')
                          projects.push(i.project);
                        }
                        $scope.projects = projects;
+                   })
+                   .error(function(value){
+                      $scope.projects = [];
                    });
            } else if ($route.current.$$route.originalPath === '/trending') {
                $scope.status = "trending";

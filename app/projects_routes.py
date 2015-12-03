@@ -292,8 +292,8 @@ def search(user, projects, allSkills):
         bundle['vector_score'] = score
         scoreList.append(bundle)
     sortedScoreList = sorted(scoreList, key=lambda k: k['vector_score'])
-    cutoffList = sortedScoreList[-5:]
-    cutoffList = cutoffList.reverse()
+    sortedScoreList.reverse()
+    cutoffList = sortedScoreList[:5]
     return cutoffList
 
 def cosine(vector1, vector2):

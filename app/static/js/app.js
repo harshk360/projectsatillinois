@@ -6,11 +6,11 @@ angular
     ])
     .config(function ($routeProvider) {
         $routeProvider
-            .when('/completed', {
+            .when('/completed/:page', {
                 templateUrl: 'static/views/home.html',
                 controller:'ProjectsCtrl'
             })
-            .when('/inprogress', {
+            .when('/inprogress/:page', {
                 templateUrl: 'static/views/home.html',
                 controller: 'ProjectsCtrl'
             })
@@ -34,7 +34,7 @@ angular
                 templateUrl: 'static/views/addProject.html',
                 controller: 'AddProjectCtrl'
             })
-            .otherwise('/completed');
+            .otherwise('/completed/1');
     });
 
 angular.module('projects')
@@ -110,15 +110,28 @@ angular.module('projects')
                  $scope.loggedIn = false;
             });
 
+        $scope.go = function(path){
+            $location.path(path);
+        };
+
         $scope.defaultImage = "/static/img/hero_blur.jpg";
 
+        if ($routeParams.page <= 0) {
+          $scope.go('/completed/1');
+        } else {
+          $scope.page = parseInt($routeParams.page);
+        }
+
         $scope.initialLoad = function() {
-            if ($route.current.$$route.originalPath === '/completed') {
+            if ($route.current.$$route.originalPath.indexOf("/completed") > -1) {
                 $scope.status = "completed";
                 $http
-                    .get('api/v1/projects/COMPLETED')
+                    .get('api/v1/projects/page/' + $scope.page + '/COMPLETED')
                     .success(function(value) {
                         $scope.projects = value.projects;
+                        $scope.numPages = value.number_of_pages;
+                        $scope.currPages = value.page;
+                        console.log(value);
                     });
            } else if($route.current.$$route.originalPath === '/recommended') {
                $scope.status = "recommended";
@@ -130,6 +143,8 @@ angular.module('projects')
                          projects.push(i.project);
                        }
                        $scope.projects = projects;
+                       $scope.numPages = value.number_of_pages;
+                       $scope.currPages = value.page;
                    })
                    .error(function(value){
                       $scope.projects = [];
@@ -140,20 +155,24 @@ angular.module('projects')
                    .get('projects/trending')
                    .success(function(value) {
                        $scope.projects = value.projects;
+                       $scope.numPages = value.number_of_pages;
+                       $scope.currPages = value.page;
                    });
            } else {
-               $scope.status = "in_progress";
+               $scope.status = "inprogress";
                $http
-                   .get('api/v1/projects/IN_PROGRESS')
+                   .get('api/v1/projects/page/' + $scope.page + '/IN_PROGRESS')
                    .success(function(value) {
                        $scope.projects = value.projects;
+                       $scope.numPages = value.number_of_pages;
+                       $scope.currPages = value.page;
                    });
            }
         }();
 
-        $scope.go = function(path){
-            $location.path(path);
-        };
+        $scope.getPages = function(num) {
+            return new Array(num);
+        }
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout) {
         $scope.project = {};

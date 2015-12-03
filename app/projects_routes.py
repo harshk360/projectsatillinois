@@ -20,7 +20,7 @@ import datetime
 @app.route('/api/v1/projects/', defaults={'page': 1})
 @app.route('/api/v1/projects/page/<int:page>')
 def get_projects(page):
-  number_per_page = 8
+  number_per_page = 9
   start_index = ((page - 1) * number_per_page)
   projects = Project.query.filter(Project.status != "Deleted").order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
   end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
@@ -36,7 +36,7 @@ def get_projects_by_status(page, status):
     status = "Deleted"
   if "complete" in status.lower():
     status = "Completed"
-  number_per_page = 8
+  number_per_page = 9
   start_index = ((page - 1) * number_per_page)
   projects = Project.query.filter(Project.status==status).order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
   end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
@@ -254,7 +254,7 @@ def logins_by_date():
     counts[date_str] = count
   string = "["
   for key, value in counts.iteritems():
-    string += "{ \"y\":\"" + key + "\", \"a\":" + str(value) + "}," 
+    string += "{ \"y\":\"" + key + "\", \"a\":" + str(value) + "},"
   string = string[:-1]
   string += "]"
   return string

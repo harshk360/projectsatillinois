@@ -219,8 +219,100 @@ class CommentForm(Form):
     comment = TextAreaField('Comment', [InputRequired()])
 
 
+def calculate_visits_velocity(project, global_visits_baseline, hours=6):
+  all_project_visits = db.session.query(Visit).filter(Visit.project_id == project.id)
+  time_filter = datetime.datetime.now() - datetime.timedelta(hours=hours)
+  prev_interval_filter = datetime.datetime.now() - datetime.timedelta(hours=2*hours)
+
+  visits_filter = all_project_visits.filter(Visit.timestamp < time_filter).all()
+  recent_visits = all_project_visits.filter(Visit.timestamp >= time_filter).all()
+  prev_interval_visits = all_project_visits.filter(Visit.timestamp.between(prev_interval_filter, time_filter)).all()
+
+  # recently created project
+  if len(visits_filter) < 2:
+    project_visits_baseline = 5
+  else:
+    time_delta_since_creation = visits_filter[-1].timestamp - visits_filter[0].timestamp
+    # edge case that should never happen, but never hurts to check
+    delta_seconds = time_delta_since_creation.total_seconds()
+    if delta_seconds < 0:
+      project_visits_baseline = 5
+    else:
+      project_visits_baseline = len(visits_filter) / ceil(delta_seconds / (60. * hours))
+
+  normalized_visits = len(recent_visits) / project_visits_baseline
+  normalized_prev_interval = len(prev_interval_visits) / project_visits_baseline
+
+  # spike: higher signal from global baseline
+  # derivative: spike from last interval
+  return normalized_visits / global_visits_baseline + max(normalized_visits - normalized_prev_interval, 0)
+
+
+def calculate_comments_velocity(project, global_comments_baseline, hours=6):
+  all_project_comments = db.session.query(Comment).filter(Comment.project_id == project.id)
+  time_filter = datetime.datetime.now() - datetime.timedelta(hours=hours)
+  prev_interval_filter = datetime.datetime.now() - datetime.timedelta(hours=2*hours)
+
+  comments_filter = all_project_comments.filter(Comment.timestamp < time_filter).all()
+  recent_comments = all_project_comments.filter(Comment.timestamp >= time_filter).all()
+  prev_interval_comments = all_project_comments.filter(Comment.timestamp.between(prev_interval_filter, time_filter)).all()
+
+  # recently created project
+  if len(comments_filter) < 2:
+    project_comment_baseline = 5
+  else:
+    time_delta_since_creation = comments_filter[-1].timestamp - comments_filter[0].timestamp
+    # edge case that should never happen, but never hurts to check
+    delta_seconds = time_delta_since_creation.total_seconds()
+    if delta_seconds < 0:
+      project_comment_baseline = 5
+    else:
+      project_comment_baseline = len(comments_filter) / ceil(delta_seconds / (60. * hours))
+
+  normalized_comments = len(recent_comments) / project_comment_baseline
+  normalized_prev_interval = len(prev_interval_comments) / project_comment_baseline
+
+  # spike: higher signal from global baseline
+  # derivative: spike from last interval
+  return normalized_comments / global_comments_baseline + max(normalized_comments - normalized_prev_interval, 0)
+
+
+# measure velocity of projects
+# low pass filter to determine baseline
+# normalize signals and spikes
+# compare derivatives
+def calculate_velocity(project, global_visits_baseline, global_comments_baseline, hours=6):
+    return (calculate_visits_velocity(project, global_visits_baseline, hours) +
+            calculate_comments_velocity(project, global_comments_baseline, hours) * 1.5)
+
+
 @app.route('/projects/trending', methods=['GET'])
 def get_trending_projects():
+  velocity_filter_interval = 6
+
+  all_projects = db.session.query(Project).all()
+
+  global_visits = db.session.query(Visit).filter(Visit.project_id is not None).all()
+  all_visits_interval = (datetime.datetime.now() - global_visits[0].timestamp).total_seconds()
+  visits_per_interval = ceil(all_visits_interval / (60. * velocity_filter_interval))
+  global_visits_baseline = len(global_visits) / visits_per_interval
+
+  global_comments = db.session.query(Comment).all()
+  all_comments_interval = (datetime.datetime.now() - global_comments[0].timestamp).total_seconds()
+  comments_per_interval = ceil(all_comments_interval / (60. * velocity_filter_interval))
+  global_comments_baseline = len(global_comments) / comments_per_interval
+
+  project_velocities = []
+  for project in all_projects:
+    project_velocities.append({
+      'project': project,
+      'velocity': calculate_velocity(project, global_visits_baseline, global_comments_baseline, velocity_filter_interval)
+    })
+
+  project_velocities.sort(key=lambda x: x['velocity'], reverse=True)
+
+  print project_velocities
+
   project_count = func.count(Project.id).label('project_count')
 
   total_project_visits = db.session.query(Visit, Project, project_count).join(Project)
@@ -229,6 +321,9 @@ def get_trending_projects():
   project_visit_data = []
   for visit, project, views in per_project_visits:
     comments = db.session.query(func.count(Comment.project_id)).filter(Comment.project_id == project.id).scalar()
+    ayy = [comment.timestamp for comment in db.session.query(Comment).filter(Comment.project_id == project.id).all()]
+    since = datetime.datetime.now() - datetime.timedelta(hours=24)
+
     # currently doesn't change with time
     score = views + 3 * comments
     data = {'project': project, 'visits': views, 'comments': comments, 'score': score}

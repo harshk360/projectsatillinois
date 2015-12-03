@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="row" style="margin-top:20px">
-        <h4 ng-show="projects.length == 0" style="text-align:center; margin-bottom: 20px">No Projects to Show!</h4>
+        <h4 ng-show="projects.length == 0 && status !== 'recommended'" style="text-align:center; margin-bottom: 20px">No Projects to Show!</h4>
         <div ng-repeat="p in projects">
             <div class="clearfix" ng-if="$index % 3 == 0"></div>
             <div class="col-md-4 col-sm-6 col-xs-6 text-center">

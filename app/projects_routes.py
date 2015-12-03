@@ -39,7 +39,7 @@ def get_projects_by_status(page, status):
   number_per_page = 9
   start_index = ((page - 1) * number_per_page)
   projects = Project.query.filter(Project.status==status).order_by(asc(Project.id)).offset(start_index).limit(number_per_page)
-  end_page = ceil(db.session.query(func.count(Project.id)).scalar() / float(number_per_page))
+  end_page = ceil(Project.query.filter(Project.status==status).count() / float(number_per_page))
   return jsonify(projects=[project.serialize() for project in projects], page = page, number_of_pages = int(end_page))
 
 @app.route('/api/v1/project/<int:id>')

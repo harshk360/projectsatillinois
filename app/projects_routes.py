@@ -311,28 +311,8 @@ def get_trending_projects():
 
   project_velocities.sort(key=lambda x: x['velocity'], reverse=True)
 
-  print project_velocities
-
-  project_count = func.count(Project.id).label('project_count')
-
-  total_project_visits = db.session.query(Visit, Project, project_count).join(Project)
-  per_project_visits = total_project_visits.group_by(Project.id).order_by(desc(project_count)).all()
-
-  project_visit_data = []
-  for visit, project, views in per_project_visits:
-    comments = db.session.query(func.count(Comment.project_id)).filter(Comment.project_id == project.id).scalar()
-    ayy = [comment.timestamp for comment in db.session.query(Comment).filter(Comment.project_id == project.id).all()]
-    since = datetime.datetime.now() - datetime.timedelta(hours=24)
-
-    # currently doesn't change with time
-    score = views + 3 * comments
-    data = {'project': project, 'visits': views, 'comments': comments, 'score': score}
-    project_visit_data.append(data)
-
-  project_visit_data.sort(key=lambda x: x['score'], reverse=True)
-
   trending_projects_list = []
-  for project in project_visit_data:
+  for project in project_velocities:
       trending_projects_list.append(project['project'].serialize())
 
   return jsonify(projects=trending_projects_list)

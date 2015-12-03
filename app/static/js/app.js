@@ -158,11 +158,6 @@ angular.module('projects')
         $http
             .get('api/v1/project/' + $routeParams.projectId)
             .success(function(value) {
-                if (value.project.status === "IN_PROGRESS") {
-                    value.project.status = "In Progress";
-                } else {
-                    value.project.status = "Completed";
-                }
                 $scope.project = value.project;
                 $http
                     .get('api/user/current')

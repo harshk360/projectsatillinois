@@ -316,7 +316,7 @@ def get_trending_projects():
   for project in project_velocities:
       trending_projects_list.append(project['project'].serialize())
 
-  return jsonify(projects=trending_projects_list)
+  return jsonify(projects=trending_projects_list[:6])
 
 
 @app.route('/api/admin/requests')

@@ -173,6 +173,19 @@ angular.module('projects')
         $scope.getPages = function(num) {
             return new Array(num);
         }
+
+        $('#pag-prev').on('click', function(e) {
+            if ($scope.currPages == 1){
+              e.preventDefault();
+            }
+        });
+
+        $('#pag-next').on('click', function(e) {
+            if ($scope.numPages == $scope.currPages){
+              e.preventDefault();
+            }
+        });
+
     })
     .controller('ProjectCtrl', function ($scope, $routeParams, $http, $route, $sce, $timeout) {
         $scope.project = {};

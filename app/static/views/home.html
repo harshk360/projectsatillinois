@@ -47,7 +47,7 @@
     <nav style="text-align: center; background-color: #F0F0F0;" ng-hide="projects.length === 0 || status == 'recommended' || status == 'trending'">
       <ul class="pagination">
         <li ng-class="{disabled: page == 1}">
-          <a href="#/{{status}}/{{page-1}}" aria-label="Previous">
+          <a href="#/{{status}}/{{page-1}}" aria-label="Previous" id="pag-prev">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
@@ -55,7 +55,7 @@
           <a href="#/{{status}}/{{$index+1}}">{{$index+1}}</a>
         </li>
         <li ng-class="{disabled: page >= numPages}">
-          <a href="#/{{status}}/{{page+1}}" aria-label="Next">
+          <a href="#/{{status}}/{{page+1}}" aria-label="Next" id="pag-next">
             <span aria-hidden="true">&raquo;</span>
           </a>
         </li>
